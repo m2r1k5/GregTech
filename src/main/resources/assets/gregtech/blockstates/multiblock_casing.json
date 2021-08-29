@@ -47,6 +47,11 @@
         "textures": {
           "all": "gregtech:blocks/casings/mechanic/machine_casing_plascrete"
         }
+      },
+      "filter_casing": {
+        "textures": {
+          "all": "gregtech:blocks/casings/mechanic/machine_casing_filter"
+        }
       }
     }
   }

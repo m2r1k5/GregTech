@@ -2183,6 +2183,7 @@ tile.multiblock_casing.assembler.name=Assembler Machine Casing
 tile.multiblock_casing.assembly_line.name=Assembly Line Casing
 tile.multiblock_casing.fusion.name=Fusion Machine Casing
 tile.multiblock_casing.fusion_mk2.name=Fusion Machine Casing MK II
+tile.multiblock_casing.plascrete.name=Plascrete
 
 # Transparent casing blocks
 tile.transparent_casing.reinforced_glass.name=Reinforced Glass
@@ -3561,8 +3562,9 @@ gregtech.machine.fusion_reactor.uv.name=Fusion Reactor Computer Mark 3
 
 gregtech.machine.large_chemical_reactor.name=Large Chemical Reactor
 
+gregtech.machine.cleanroom.name=Cleanroom
+
 # Multiblock Tooltips
-gregtech.machine.primitive_blast_furnace.bronze.tooltip=Structure: 3x3x4 (WxLxH) The entire structure is made out of Primitive Bricks (32 in total)./nFirst Layer is a 3x3 square./nSecond, third, and fourth layers are hollow, without the middle block./nThis block goes on the middle of any side in the second layer./nThe sides of Blast Furnaces can be shared, if the side does not have a controller./n
 gregtech.machine.multiblock.universal.controller_information=Controller block for the §e%s§7.
 
 # Multiblock machine parts
@@ -3896,6 +3898,8 @@ gregtech.multiblock.large_boiler.heat_efficiency=Heat Efficiency: %d%%
 gregtech.multiblock.large_boiler.heat_efficiency.tooltip=The higher boiler temperature is, the higher it's fuel efficiency
 gregtech.multiblock.large_boiler.throttle.tooltip=Boiler can output less steam and consume less fuel, but it comes with price: the fuel efficiency is lower at higher throttle rates.
 gregtech.multiblock.large_boiler.throttle_modify=Modify Throttle:
+
+gregtech.multiblock.cleanroom.cleanliness=Cleanliness: %s%%
 
 gregtech.command.usage=Usage: /gregtech <worldgen/util>
 gregtech.command.worldgen.usage=Usage: /gregtech worldgen <reload>
