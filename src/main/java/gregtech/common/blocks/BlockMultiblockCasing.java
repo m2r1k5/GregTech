@@ -34,7 +34,8 @@ public class BlockMultiblockCasing extends VariantBlock<BlockMultiblockCasing.Mu
         ASSEMBLER_CASING("assembler"),
         ASSEMBLY_LINE_CASING("assembly_line"),
         FUSION_CASING("fusion"),
-        FUSION_CASING_MK2("fusion_mk2");
+        FUSION_CASING_MK2("fusion_mk2"),
+        PLASCRETE("plascrete");
 
         private final String name;
 

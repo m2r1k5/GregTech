@@ -702,6 +702,8 @@ public class RecipeMaps {
             .setSlotOverlay(true, false, GuiTextures.CRUSHED_ORE_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_MACERATE, MoveType.HORIZONTAL);
 
+    public static final RecipeMap<SimpleRecipeBuilder> CLEANROOM_RECIPES = new RecipeMap<>("cleanroom", 0, 0, 0, 0, 0, 0, 0, 0, new SimpleRecipeBuilder().EUt(30), true);
+
     @ZenProperty
     public static final RecipeMap<PrimitiveRecipeBuilder> PRIMITIVE_BLAST_FURNACE_RECIPES = new RecipeMap<>("primitive_blast_furnace", 2, 3, 1, 3, 0, 0, 0, 0, new PrimitiveRecipeBuilder(), false);
 

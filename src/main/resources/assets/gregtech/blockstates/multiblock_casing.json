@@ -42,6 +42,11 @@
         "textures": {
           "all": "gregtech:blocks/casings/fusion/machine_casing_fusion_2"
         }
+      },
+      "plascrete": {
+        "textures": {
+          "all": "gregtech:blocks/casings/mechanic/machine_casing_plascrete"
+        }
       }
     }
   }

@@ -169,6 +169,8 @@ public class MetaTileEntities {
     public static MetaTileEntitySteamOven STEAM_OVEN;
     public static MetaTileEntitySteamGrinder STEAM_GRINDER;
 
+    public static MetaTileEntityCleanroom CLEANROOM;
+
     //STORAGE SECTION
     public static MetaTileEntityLockedSafe LOCKED_SAFE;
 
@@ -468,6 +470,8 @@ public class MetaTileEntities {
         STEAM_OVEN = registerMetaTileEntity(1023, new MetaTileEntitySteamOven(gregtechId("steam_oven")));
         STEAM_GRINDER = registerMetaTileEntity(1024, new MetaTileEntitySteamGrinder(gregtechId("steam_grinder")));
 
+        CLEANROOM = GregTechAPI.registerMetaTileEntity(1025, new MetaTileEntityCleanroom(gregtechId("cleanroom")));
+
         // MISC MTE's START: IDs 1150-2000
 
         // Import/Export Buses/Hatches, IDs 1150-1209
@@ -494,6 +498,7 @@ public class MetaTileEntities {
         registerMetaTileEntity(1165 + 9, ITEM_EXPORT_BUS[9]);
         registerMetaTileEntity(1180 + 9, FLUID_IMPORT_HATCH[9]);
         registerMetaTileEntity(1195 + 9, FLUID_EXPORT_HATCH[9]);
+
 
         // Multi-Fluid Hatches
         MULTI_FLUID_IMPORT_HATCH[0] = registerMetaTileEntity(1190, new MetaTileEntityMultiFluidHatch(gregtechId("fluid_hatch.import_4x"), 2, false));
