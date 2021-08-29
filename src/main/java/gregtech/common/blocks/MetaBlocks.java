@@ -88,6 +88,7 @@ public class MetaBlocks {
     public static BlockMachineCasing MACHINE_CASING;
     public static BlockSteamCasing STEAM_CASING;
     public static BlockMultiblockCasing MULTIBLOCK_CASING;
+    public static BlockCleanroomCasing CLEANROOM_CASING;
     public static BlockTransparentCasing TRANSPARENT_CASING;
     public static BlockWireCoil WIRE_COIL;
     public static BlockFusionCoil FUSION_COIL;
@@ -146,6 +147,8 @@ public class MetaBlocks {
         STEAM_CASING.setRegistryName("steam_casing");
         MULTIBLOCK_CASING = new BlockMultiblockCasing();
         MULTIBLOCK_CASING.setRegistryName("multiblock_casing");
+        CLEANROOM_CASING = new BlockCleanroomCasing();
+        CLEANROOM_CASING.setRegistryName("cleanroom_casing");
         TRANSPARENT_CASING = new BlockTransparentCasing();
         TRANSPARENT_CASING.setRegistryName("transparent_casing");
         WIRE_COIL = new BlockWireCoil();
@@ -329,6 +332,7 @@ public class MetaBlocks {
         registerItemModel(MACHINE_CASING);
         registerItemModel(STEAM_CASING);
         registerItemModel(MULTIBLOCK_CASING);
+        registerItemModel(CLEANROOM_CASING);
         registerItemModel(TRANSPARENT_CASING);
         registerItemModel(WIRE_COIL);
         registerItemModel(FUSION_COIL);

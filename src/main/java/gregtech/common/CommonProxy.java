@@ -89,6 +89,7 @@ public class CommonProxy {
         registry.register(MACHINE_CASING);
         registry.register(STEAM_CASING);
         registry.register(MULTIBLOCK_CASING);
+        registry.register(CLEANROOM_CASING);
         registry.register(TRANSPARENT_CASING);
         registry.register(WIRE_COIL);
         registry.register(FUSION_COIL);
@@ -138,6 +139,7 @@ public class CommonProxy {
         registry.register(createItemBlock(MACHINE_CASING, VariantItemBlock::new));
         registry.register(createItemBlock(STEAM_CASING, VariantItemBlock::new));
         registry.register(createItemBlock(MULTIBLOCK_CASING, VariantItemBlock::new));
+        registry.register(createItemBlock(CLEANROOM_CASING, VariantItemBlock::new));
         registry.register(createItemBlock(TRANSPARENT_CASING, VariantItemBlock::new));
         registry.register(createItemBlock(WIRE_COIL, VariantItemBlock::new));
         registry.register(createItemBlock(FUSION_COIL, VariantItemBlock::new));

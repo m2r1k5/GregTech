@@ -1,0 +1,58 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube_all",
+    "textures": {
+      "all": "gregtech:blocks/rendering_error"
+    }
+  },
+  "variants": {
+    "variant": {
+      "plascrete": {
+        "textures": {
+          "all": "gregtech:blocks/casings/cleanroom_casing/machine_casing_plascrete"
+        }
+      },
+      "filter_1": {
+        "textures": {
+          "all": "gregtech:blocks/casings/cleanroom_casing/machine_casing_filter_1"
+        }
+      },
+      "filter_2": {
+        "textures": {
+          "all": "gregtech:blocks/casings/cleanroom_casing/machine_casing_filter_2"
+        }
+      },
+      "filter_3": {
+        "textures": {
+          "all": "gregtech:blocks/casings/cleanroom_casing/machine_casing_filter_3"
+        }
+      },
+      "filter_4": {
+        "textures": {
+          "all": "gregtech:blocks/casings/cleanroom_casing/machine_casing_filter_4"
+        }
+      },
+      "filter_5": {
+        "textures": {
+          "all": "gregtech:blocks/casings/cleanroom_casing/machine_casing_filter_5"
+        }
+      },
+      "filter_6": {
+        "textures": {
+          "all": "gregtech:blocks/casings/cleanroom_casing/machine_casing_filter_6"
+        }
+      },
+      "filter_7": {
+        "textures": {
+          "all": "gregtech:blocks/casings/cleanroom_casing/machine_casing_filter_7"
+        }
+      },
+      "filter_8": {
+        "textures": {
+          "all": "gregtech:blocks/casings/cleanroom_casing/machine_casing_filter_8"
+        }
+      }
+    }
+  }
+}

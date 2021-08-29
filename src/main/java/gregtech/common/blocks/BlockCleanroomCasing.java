@@ -10,16 +10,16 @@ import net.minecraft.world.IBlockAccess;
 
 import javax.annotation.Nonnull;
 
-public class BlockMultiblockCasing extends VariantBlock<BlockMultiblockCasing.MultiblockCasingType> {
+public class BlockCleanroomCasing extends VariantBlock<BlockCleanroomCasing.casingType> {
 
-    public BlockMultiblockCasing() {
+    public BlockCleanroomCasing() {
         super(Material.IRON);
-        setTranslationKey("multiblock_casing");
-        setHardness(5.0f);
+        setTranslationKey("cleanroom_casing");
+        setHardness(25.0f);
         setResistance(10.0f);
         setSoundType(SoundType.METAL);
-        setHarvestLevel("wrench", 2);
-        setDefaultState(getState(MultiblockCasingType.ENGINE_INTAKE_CASING));
+        setHarvestLevel("pickaxe", 2);
+        setDefaultState(getState(casingType.PLASCRETE));
     }
 
     @Override
@@ -27,25 +27,34 @@ public class BlockMultiblockCasing extends VariantBlock<BlockMultiblockCasing.Mu
         return false;
     }
 
-    public enum MultiblockCasingType implements IStringSerializable {
+    public enum casingType implements IStringSerializable {
 
-        ENGINE_INTAKE_CASING("engine_intake"),
-        GRATE_CASING("grate"),
-        ASSEMBLER_CASING("assembler"),
-        ASSEMBLY_LINE_CASING("assembly_line"),
-        FUSION_CASING("fusion"),
-        FUSION_CASING_MK2("fusion_mk2");
+        PLASCRETE("plascrete", 0),
+        FILTER_1("filter_1", 1),
+        FILTER_2("filter_2", 2),
+        FILTER_3("filter_3", 4),
+        FILTER_4("filter_4", 8),
+        FILTER_5("filter_5", 16),
+        FILTER_6("filter_6", 32),
+        FILTER_7("filter_7", 64),
+        FILTER_8("filter_8", 128);
 
         private final String name;
+        private final int level;
 
-        MultiblockCasingType(String name) {
+        casingType(String name, int level) {
             this.name = name;
+            this.level = level;
         }
 
         @Nonnull
         @Override
         public String getName() {
             return this.name;
+        }
+
+        public int getLevel(){
+            return this.level;
         }
 
     }

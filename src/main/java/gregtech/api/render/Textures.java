@@ -62,7 +62,7 @@ public class Textures {
     public static final SimpleCubeRenderer TUNGSTENSTEEL_FIREBOX_ACTIVE = new SimpleCubeRenderer("casings/firebox/machine_casing_firebox_tungstensteel_active");
     public static final SimpleCubeRenderer FUSION_TEXTURE = new SimpleCubeRenderer("casings/fusion/machine_casing_fusion_glass");
     public static final SimpleCubeRenderer ACTIVE_FUSION_TEXTURE = new SimpleCubeRenderer("casings/fusion/machine_casing_fusion_glass_yellow", true);
-    public static final SimpleCubeRenderer PLASCRETE = new SimpleCubeRenderer("casings/mechanic/machine_casing_plascrete");
+    public static final SimpleCubeRenderer PLASCRETE = new SimpleCubeRenderer("casings/cleanroom_casing/machine_casing_plascrete");
 
     // Simple Sided Cube Renderers
     public static final SimpleSidedCubeRenderer STEAM_CASING_BRONZE = new SimpleSidedCubeRenderer("casings/steam/bronze");
