@@ -1,5 +1,6 @@
 package gregtech.common.metatileentities.multi.electric;
 
+import gregtech.api.capability.impl.FluidTankList;
 import gregtech.api.capability.impl.MultiblockRecipeLogic;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntityHolder;
@@ -19,9 +20,17 @@ import gregtech.api.util.GTUtility;
 import gregtech.common.blocks.BlockMultiblockCasing;
 import gregtech.common.blocks.MetaBlocks;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -124,6 +133,11 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController {
             this.progressTime = 1;
             setMaxProgress(recipe.getDuration());
             this.recipeEUt = recipe.getEUt();
+
+            // prevent NBT writing NPE on world load
+            this.itemOutputs = NonNullList.create();
+            this.fluidOutputs = new ArrayList<>();
+
             if (this.wasActiveAndNeedsUpdate) {
                 this.wasActiveAndNeedsUpdate = false;
             } else {
@@ -144,6 +158,11 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController {
             this.progressTime = 0;
             setMaxProgress(0);
             this.recipeEUt = 0;
+
+            // prevent NBT writing NPE on world load
+            this.fluidOutputs = null;
+            this.itemOutputs = null;
+
             this.hasNotEnoughEnergy = false;
             this.wasActiveAndNeedsUpdate = true;
         }
