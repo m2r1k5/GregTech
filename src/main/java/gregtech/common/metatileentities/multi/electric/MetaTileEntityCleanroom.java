@@ -148,13 +148,15 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController {
         return 9;
     }
 
-    protected int getRawLevel() {
-        return this.rawLevel;
+    protected int getEnergyUsage() {
+        if (rawLevel == GTValues.V[GTUtility.getTierByVoltage(rawLevel)])
+            return (int) GTValues.VA[GTUtility.getTierByVoltage(rawLevel)];
+        return rawLevel;
     }
 
     protected static class CleanroomWorkableHandler extends MultiblockRecipeLogic {
 
-        private static final Recipe cleanroomRecipe = new Recipe(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 1200, 1, true);
+        private static final Recipe cleanroomRecipe = new Recipe(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 600, 1, true);
 
         public CleanroomWorkableHandler(RecipeMapMultiblockController metaTileEntity) {
             super(metaTileEntity);
@@ -176,11 +178,10 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController {
 
         @Override
         protected void setupRecipe(Recipe recipe) {
-            int[] overclock = calculateOverclock(calculateRecipeVoltage(), getOverclockVoltage(), recipe.getDuration());
+            int[] overclock = calculateOverclock(getCleanroom().getEnergyUsage(), getOverclockVoltage(), recipe.getDuration());
             this.progressTime = 1;
             setMaxProgress(overclock[1]);
             this.recipeEUt = overclock[0];
-            System.out.println(overclock[0]);
 
             // prevent NBT writing NPE on world load
             this.itemOutputs = NonNullList.create();
@@ -193,10 +194,10 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController {
             }
         }
 
-        protected int calculateRecipeVoltage() {
-            if (getCleanroom().getRawLevel() < 32)
-                return getCleanroom().getRawLevel();
-            return (int) GTValues.VA[GTUtility.getTierByVoltage(getCleanroom().getRawLevel())];
+        @Override
+        public long getOverclockVoltage() {
+            // the cleanroom overclock voltage is 0 without this override
+            return this.getMaxVoltage();
         }
 
         @Override
