@@ -1,6 +1,8 @@
 package gregtech.common.metatileentities.multi.electric;
 
 import gregtech.api.GTValues;
+import gregtech.api.capability.ICleanroomReceiver;
+import gregtech.api.capability.ICleanroomTransmitter;
 import gregtech.api.capability.impl.MultiblockRecipeLogic;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntityHolder;
@@ -22,10 +24,14 @@ import gregtech.common.ConfigHolder;
 import gregtech.common.blocks.BlockCleanroomCasing;
 import gregtech.common.blocks.MetaBlocks;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -33,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class MetaTileEntityCleanroom extends RecipeMapMultiblockController {
+public class MetaTileEntityCleanroom extends RecipeMapMultiblockController implements ICleanroomTransmitter {
 
     private static MultiblockAbility<?>[] ALLOWED_ABILITIES = {
             MultiblockAbility.INPUT_ENERGY
@@ -64,7 +70,7 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController {
                 .where('X', maintenancePredicate(getCasingState()).or(abilityPartPredicate(ALLOWED_ABILITIES)))
                 .where('F', filterPredicate())
                 .where('S', selfPredicate())
-                .where(' ', (tile) -> true)
+                .where(' ', innerPredicate())
                 .build();
     }
 
@@ -80,6 +86,23 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController {
             BlockCleanroomCasing blockCleanroomCasing = (BlockCleanroomCasing) blockState.getBlock();
             BlockCleanroomCasing.casingType casingType = blockCleanroomCasing.getState(blockState);
             blockWorldState.getMatchContext().increment("filterLevel", casingType.getLevel());
+            return true;
+        };
+    }
+
+    public Predicate<BlockWorldState> innerPredicate() {
+        return blockWorldState -> {
+            TileEntity tileEntity = blockWorldState.getTileEntity();
+            if (!(tileEntity instanceof MetaTileEntityHolder))
+                return true;
+
+            MetaTileEntity metaTileEntity = ((MetaTileEntityHolder) tileEntity).getMetaTileEntity();
+            if (!(metaTileEntity instanceof ICleanroomReceiver))
+                return true;
+
+            ICleanroomReceiver cleanroomReceiver = (ICleanroomReceiver) metaTileEntity;
+            if (!cleanroomReceiver.hasCleanroom())
+                cleanroomReceiver.setCleanroom(this);
             return true;
         };
     }
@@ -114,7 +137,7 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController {
         super.addDisplayText(textList);
         if (isClean) {
             textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.clean_state"));
-            textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.level", this.cleanLevel));
+            textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.level", new TextComponentTranslation("gregtech.multiblock.cleanroom.iso", this.cleanLevel).setStyle(new Style().setColor(TextFormatting.GOLD))));
         } else {
             textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.dirty_state"));
         }
@@ -152,6 +175,11 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController {
         if (rawLevel == GTValues.V[GTUtility.getTierByVoltage(rawLevel)])
             return (int) GTValues.VA[GTUtility.getTierByVoltage(rawLevel)];
         return rawLevel;
+    }
+
+    @Override
+    public MetaTileEntity getMetaTileEntity() {
+        return this;
     }
 
     protected static class CleanroomWorkableHandler extends MultiblockRecipeLogic {

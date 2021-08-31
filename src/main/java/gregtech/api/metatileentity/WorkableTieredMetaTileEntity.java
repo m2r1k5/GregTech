@@ -4,6 +4,8 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.pipeline.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
 import gregtech.api.GTValues;
+import gregtech.api.capability.ICleanroomReceiver;
+import gregtech.api.capability.ICleanroomTransmitter;
 import gregtech.api.capability.impl.*;
 import gregtech.api.recipes.Recipe;
 import gregtech.api.recipes.RecipeMap;
@@ -24,10 +26,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-public abstract class WorkableTieredMetaTileEntity extends TieredMetaTileEntity {
+public abstract class WorkableTieredMetaTileEntity extends TieredMetaTileEntity implements ICleanroomReceiver {
 
     protected final RecipeLogicEnergy workable;
     protected final OrientedOverlayRenderer renderer;
+    private MetaTileEntity cleanroom;
 
     private final Function<Integer, Integer> tankScalingFunction;
 
@@ -143,5 +146,20 @@ public abstract class WorkableTieredMetaTileEntity extends TieredMetaTileEntity 
 
     public Function<Integer, Integer> getTankScalingFunction() {
         return tankScalingFunction;
+    }
+
+    @Override
+    public void setCleanroom(ICleanroomTransmitter cleanroomTransmitter) {
+        this.cleanroom = cleanroomTransmitter.getMetaTileEntity();
+    }
+
+    @Override
+    public boolean hasCleanroom() {
+        return this.cleanroom != null;
+    }
+
+    @Override
+    public MetaTileEntity getCleanroom() {
+        return this.cleanroom;
     }
 }

@@ -3901,7 +3901,8 @@ gregtech.multiblock.large_boiler.throttle_modify=Modify Throttle:
 
 gregtech.multiblock.cleanroom.clean_state=Status: §aCLEAN
 gregtech.multiblock.cleanroom.dirty_state=Status: §4CONTAMINATED
-gregtech.multiblock.cleanroom.level=Cleanroom Level: §6ISO%s
+gregtech.multiblock.cleanroom.level=Cleanroom Level: %s
+gregtech.multiblock.cleanroom.iso=ISO%s
 
 gregtech.command.usage=Usage: /gregtech <worldgen/util>
 gregtech.command.worldgen.usage=Usage: /gregtech worldgen <reload>
