@@ -4,5 +4,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 
 public interface ICleanroomTransmitter {
 
-    MetaTileEntity getMetaTileEntity();
+    MetaTileEntity getCleanroomTileEntity();
+
+    int getCleanRoomLevel();
 }

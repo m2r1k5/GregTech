@@ -137,7 +137,7 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
         super.addDisplayText(textList);
         if (isClean) {
             textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.clean_state"));
-            textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.level", new TextComponentTranslation("gregtech.multiblock.cleanroom.iso", this.cleanLevel).setStyle(new Style().setColor(TextFormatting.GOLD))));
+            textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.level", new TextComponentTranslation("gregtech.multiblock.cleanroom.iso", 10 - this.cleanLevel).setStyle(new Style().setColor(TextFormatting.GOLD))));
         } else {
             textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.dirty_state"));
         }
@@ -153,22 +153,27 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
 
     private int calculateCleanLevel(int rawLevel) {
         if (rawLevel >= 1024)
-            return 1;
+            return 9;
         else if (rawLevel >= 512)
-            return 2;
+            return 8;
         else if (rawLevel >= 256)
-            return 3;
+            return 7;
         else if (rawLevel >= 128)
-            return 4;
+            return 6;
         else if (rawLevel >= 64)
             return 5;
         else if (rawLevel >= 32)
-            return 6;
+            return 4;
         else if (rawLevel >= 16)
-            return 7;
+            return 3;
         else if (rawLevel >= 8)
-            return 8;
-        return 9;
+            return 2;
+        return 1;
+    }
+
+    @Override
+    public int getCleanRoomLevel() {
+        return this.cleanLevel;
     }
 
     protected int getEnergyUsage() {
@@ -178,7 +183,7 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
     }
 
     @Override
-    public MetaTileEntity getMetaTileEntity() {
+    public MetaTileEntity getCleanroomTileEntity() {
         return this;
     }
 

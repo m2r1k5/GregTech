@@ -3,6 +3,9 @@ package gregtech.api.recipes;
 import gregtech.api.GTValues;
 import gregtech.api.items.metaitem.MetaItem;
 import gregtech.api.recipes.Recipe.ChanceEntry;
+import gregtech.api.recipes.builders.BlastRecipeBuilder;
+import gregtech.api.recipes.recipeproperties.BlastTemperatureProperty;
+import gregtech.api.recipes.recipeproperties.CleanroomProperty;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.material.Material;
 import gregtech.api.unification.ore.OrePrefix;
@@ -39,6 +42,8 @@ public abstract class RecipeBuilder<R extends RecipeBuilder<R>> {
 
     protected int duration, EUt;
     protected boolean hidden = false;
+
+    private int cleanroomLevel;
 
     protected EnumValidationResult recipeStatus = EnumValidationResult.VALID;
 
@@ -84,7 +89,20 @@ public abstract class RecipeBuilder<R extends RecipeBuilder<R>> {
     }
 
     public boolean applyProperty(String key, Object value) {
+        if (key.equals(CleanroomProperty.KEY)) {
+            this.cleanroomLevel(((Number) value).intValue());
+            return true;
+        }
         return false;
+    }
+
+    public RecipeBuilder<R> cleanroomLevel(int minCleanroomLevel) {
+        if (minCleanroomLevel < 0) {
+            GTLog.logger.error("Cleanroom Levels cannot be less than 0", new IllegalArgumentException());
+            recipeStatus = EnumValidationResult.INVALID;
+        }
+        this.cleanroomLevel = minCleanroomLevel;
+        return this;
     }
 
     public boolean applyProperty(String key, ItemStack item) {
@@ -395,6 +413,7 @@ public abstract class RecipeBuilder<R extends RecipeBuilder<R>> {
                 .append("EUt", EUt)
                 .append("hidden", hidden)
                 .append("recipeStatus", recipeStatus)
+                .append(CleanroomProperty.getInstance().getKey(), cleanroomLevel)
                 .toString();
     }
 }

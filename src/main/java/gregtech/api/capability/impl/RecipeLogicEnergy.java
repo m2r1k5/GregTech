@@ -1,8 +1,17 @@
 package gregtech.api.capability.impl;
 
+import gregtech.api.GTValues;
+import gregtech.api.capability.ICleanroomReceiver;
+import gregtech.api.capability.ICleanroomTransmitter;
 import gregtech.api.capability.IEnergyContainer;
+import gregtech.api.capability.IMultipleTankHandler;
 import gregtech.api.metatileentity.MetaTileEntity;
+import gregtech.api.recipes.MatchingMode;
+import gregtech.api.recipes.Recipe;
 import gregtech.api.recipes.RecipeMap;
+import gregtech.api.recipes.recipeproperties.CleanroomProperty;
+import gregtech.common.ConfigHolder;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.function.Supplier;
 
@@ -40,4 +49,96 @@ public class RecipeLogicEnergy extends AbstractRecipeLogic {
                 energyContainer.get().getOutputVoltage());
     }
 
+    @Override
+    protected void trySearchNewRecipe() {
+        long maxVoltage = getMaxVoltage();
+        Recipe currentRecipe = null;
+        IItemHandlerModifiable importInventory = getInputInventory();
+        IMultipleTankHandler importFluids = getInputTank();
+
+        // see if the last recipe we used still works
+        if (this.previousRecipe != null && this.previousRecipe.matches(false, importInventory, importFluids))
+            currentRecipe = this.previousRecipe;
+            // If there is no active recipe, then we need to find one.
+        else
+            currentRecipe = findRecipe(maxVoltage, importInventory, importFluids, MatchingMode.DEFAULT);
+
+        if (currentRecipe != null && metaTileEntity instanceof ICleanroomReceiver) {
+            int cleanroomRequiredLevel = currentRecipe.getProperty(CleanroomProperty.getInstance(), -1);
+            ICleanroomReceiver cleanroomReceiver = (ICleanroomReceiver) metaTileEntity;
+
+            if (cleanroomRequiredLevel != -1) {
+                if (cleanroomReceiver.hasCleanroom()) {
+                    ICleanroomTransmitter cleanroomTransmitter = cleanroomReceiver.getCleanroom();
+                    int cleanroomLevel = cleanroomTransmitter.getCleanRoomLevel();
+                    if (cleanroomRequiredLevel > cleanroomLevel)
+                        currentRecipe = null;
+                } else {
+                    currentRecipe = null;
+                }
+            }
+        }
+
+        // If a recipe was found, then inputs were valid. Cache found recipe.
+        if (currentRecipe != null)
+            this.previousRecipe = currentRecipe;
+
+        if (currentRecipe == null)
+            this.invalidInputsForRecipes = true;
+
+        // proceed if we have a usable recipe.
+        if (currentRecipe != null && setupAndConsumeRecipeInputs(currentRecipe))
+            setupRecipe(currentRecipe);
+        // Inputs have been inspected.
+        metaTileEntity.getNotifiedItemInputList().clear();
+        metaTileEntity.getNotifiedFluidInputList().clear();
+    }
+
+    @Override
+    protected int[] calculateOverclock(int EUt, long voltage, int duration) {
+        int perfectOverclocks = 0;
+        if (metaTileEntity instanceof ICleanroomReceiver) {
+            ICleanroomReceiver cleanroomReceiver = (ICleanroomReceiver) metaTileEntity;
+            if (cleanroomReceiver.hasCleanroom()) {
+                ICleanroomTransmitter cleanroomTransmitter = cleanroomReceiver.getCleanroom();
+                int cleanroomLevel = cleanroomTransmitter.getCleanRoomLevel();
+                int cleanroomRecipeLevel = this.previousRecipe.getProperty(CleanroomProperty.getInstance(), 0);
+
+                perfectOverclocks = Math.max(cleanroomLevel - cleanroomRecipeLevel, 0);
+            }
+        }
+
+        if (!allowOverclocking) {
+            return new int[]{EUt, duration};
+        }
+        boolean negativeEU = EUt < 0;
+        int tier = getOverclockingTier(voltage);
+
+        // Cannot overclock
+        if (GTValues.V[tier] <= EUt || tier == 0)
+            return new int[]{EUt, duration};
+
+        if (negativeEU)
+            EUt = -EUt;
+
+        int resultEUt = EUt;
+        double resultDuration = duration;
+        int maxOverclocks = tier - 1; // exclude ULV overclocking
+
+        //do not overclock further if duration is already too small
+        while (resultDuration >= 3 && resultEUt <= GTValues.V[tier - 1] && maxOverclocks != 0 && perfectOverclocks > 0) {
+            resultEUt *= 4;
+            resultDuration /= 4.0;
+            maxOverclocks--;
+        }
+
+        //do not overclock further if duration is already too small
+        while (resultDuration >= 3 && resultEUt <= GTValues.V[tier - 1] && maxOverclocks != 0) {
+            resultEUt *= 4;
+            resultDuration /= ConfigHolder.U.overclockDivisor;
+            maxOverclocks--;
+        }
+
+        return new int[]{negativeEU ? -resultEUt : resultEUt, (int) Math.ceil(resultDuration)};
+    }
 }

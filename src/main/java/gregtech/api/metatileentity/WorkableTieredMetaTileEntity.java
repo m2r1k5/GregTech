@@ -150,7 +150,7 @@ public abstract class WorkableTieredMetaTileEntity extends TieredMetaTileEntity 
 
     @Override
     public void setCleanroom(ICleanroomTransmitter cleanroomTransmitter) {
-        this.cleanroom = cleanroomTransmitter.getMetaTileEntity();
+        this.cleanroom = cleanroomTransmitter.getCleanroomTileEntity();
     }
 
     @Override
@@ -159,7 +159,7 @@ public abstract class WorkableTieredMetaTileEntity extends TieredMetaTileEntity 
     }
 
     @Override
-    public MetaTileEntity getCleanroom() {
-        return this.cleanroom;
+    public ICleanroomTransmitter getCleanroom() {
+        return (ICleanroomTransmitter) this.cleanroom;
     }
 }
