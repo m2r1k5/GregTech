@@ -3,8 +3,6 @@ package gregtech.api.recipes;
 import gregtech.api.GTValues;
 import gregtech.api.items.metaitem.MetaItem;
 import gregtech.api.recipes.Recipe.ChanceEntry;
-import gregtech.api.recipes.builders.BlastRecipeBuilder;
-import gregtech.api.recipes.recipeproperties.BlastTemperatureProperty;
 import gregtech.api.recipes.recipeproperties.CleanroomProperty;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.material.Material;
@@ -43,7 +41,7 @@ public abstract class RecipeBuilder<R extends RecipeBuilder<R>> {
     protected int duration, EUt;
     protected boolean hidden = false;
 
-    private int cleanroomLevel;
+    private int cleanroomLevel = -1;
 
     protected EnumValidationResult recipeStatus = EnumValidationResult.VALID;
 
@@ -373,6 +371,12 @@ public abstract class RecipeBuilder<R extends RecipeBuilder<R>> {
 
     public void buildAndRegister() {
         ValidationResult<Recipe> validationResult = build();
+        if (cleanroomLevel != -1) {
+            Recipe recipe = validationResult.getResult();
+            if (!recipe.setProperty(CleanroomProperty.getInstance(), cleanroomLevel)) {
+                validationResult = ValidationResult.newResult(EnumValidationResult.INVALID, validationResult.getResult());
+            }
+        }
         recipeMap.addRecipe(validationResult);
     }
 

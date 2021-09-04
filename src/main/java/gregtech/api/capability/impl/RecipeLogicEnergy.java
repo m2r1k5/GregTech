@@ -52,7 +52,7 @@ public class RecipeLogicEnergy extends AbstractRecipeLogic {
     @Override
     protected void trySearchNewRecipe() {
         long maxVoltage = getMaxVoltage();
-        Recipe currentRecipe = null;
+        Recipe currentRecipe;
         IItemHandlerModifiable importInventory = getInputInventory();
         IMultipleTankHandler importFluids = getInputTank();
 
@@ -64,13 +64,11 @@ public class RecipeLogicEnergy extends AbstractRecipeLogic {
             currentRecipe = findRecipe(maxVoltage, importInventory, importFluids, MatchingMode.DEFAULT);
 
         if (currentRecipe != null && metaTileEntity instanceof ICleanroomReceiver) {
-            int cleanroomRequiredLevel = currentRecipe.getProperty(CleanroomProperty.getInstance(), -1);
             ICleanroomReceiver cleanroomReceiver = (ICleanroomReceiver) metaTileEntity;
-
-            if (cleanroomRequiredLevel != -1) {
+            if (currentRecipe.hasProperty(CleanroomProperty.getInstance())) {
                 if (cleanroomReceiver.hasCleanroom()) {
-                    ICleanroomTransmitter cleanroomTransmitter = cleanroomReceiver.getCleanroom();
-                    int cleanroomLevel = cleanroomTransmitter.getCleanRoomLevel();
+                    int cleanroomRequiredLevel = currentRecipe.getProperty(CleanroomProperty.getInstance(), -1);
+                    int cleanroomLevel = cleanroomReceiver.getCleanroom().getCleanRoomLevel();
                     if (cleanroomRequiredLevel > cleanroomLevel)
                         currentRecipe = null;
                 } else {
@@ -83,6 +81,9 @@ public class RecipeLogicEnergy extends AbstractRecipeLogic {
         if (currentRecipe != null)
             this.previousRecipe = currentRecipe;
 
+        // this could cause problems if inputs are provided before the cleanroom gets around to setting state
+        // on the machine, then the inputs would need to be modified again before it will run. Need to be
+        // careful with handling this to avoid a regression in performance improvements.
         if (currentRecipe == null)
             this.invalidInputsForRecipes = true;
 
@@ -99,7 +100,7 @@ public class RecipeLogicEnergy extends AbstractRecipeLogic {
         int perfectOverclocks = 0;
         if (metaTileEntity instanceof ICleanroomReceiver) {
             ICleanroomReceiver cleanroomReceiver = (ICleanroomReceiver) metaTileEntity;
-            if (cleanroomReceiver.hasCleanroom()) {
+            if (cleanroomReceiver.hasCleanroom() && previousRecipe.hasProperty(CleanroomProperty.getInstance())) {
                 ICleanroomTransmitter cleanroomTransmitter = cleanroomReceiver.getCleanroom();
                 int cleanroomLevel = cleanroomTransmitter.getCleanRoomLevel();
                 int cleanroomRecipeLevel = this.previousRecipe.getProperty(CleanroomProperty.getInstance(), 0);
