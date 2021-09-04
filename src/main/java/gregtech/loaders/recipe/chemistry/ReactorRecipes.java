@@ -1,6 +1,7 @@
 package gregtech.loaders.recipe.chemistry;
 
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
+import gregtech.api.recipes.recipeproperties.CleanroomProperty;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.material.Materials;
 import gregtech.api.unification.ore.OrePrefix;
@@ -1062,7 +1063,7 @@ public class ReactorRecipes {
                 .fluidInputs(Air.getFluid(1000))
                 .output(dust, Plutonium239, 8)
                 .fluidOutputs(Radon.getFluid(100))
-                .cleanroomLevel(1)
+                .cleanroomLevel(CleanroomProperty.CleanroomLevel.ISO8)
                 .duration(12000).EUt(8).buildAndRegister();
 
         CHEMICAL_RECIPES.recipeBuilder()

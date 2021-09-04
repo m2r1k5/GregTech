@@ -16,6 +16,7 @@ import gregtech.api.multiblock.FactoryBlockPattern;
 import gregtech.api.multiblock.PatternMatchContext;
 import gregtech.api.recipes.Recipe;
 import gregtech.api.recipes.RecipeMaps;
+import gregtech.api.recipes.recipeproperties.CleanroomProperty.CleanroomLevel;
 import gregtech.api.render.ICubeRenderer;
 import gregtech.api.render.OrientedOverlayRenderer;
 import gregtech.api.render.Textures;
@@ -24,15 +25,10 @@ import gregtech.common.ConfigHolder;
 import gregtech.common.blocks.BlockCleanroomCasing;
 import gregtech.common.blocks.MetaBlocks;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.util.text.*;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -45,7 +41,7 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
             MultiblockAbility.INPUT_ENERGY
     };
 
-    private int cleanLevel;
+    private CleanroomLevel cleanLevel;
     private int rawLevel;
     private boolean isClean;
 
@@ -127,7 +123,7 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
     @Override
     public void invalidateStructure() {
         super.invalidateStructure();
-        this.cleanLevel = 0;
+        this.cleanLevel = null;
         this.rawLevel = 0;
         this.isClean = false;
     }
@@ -137,7 +133,7 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
         super.addDisplayText(textList);
         if (isClean) {
             textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.clean_state"));
-            textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.level", new TextComponentTranslation("gregtech.multiblock.cleanroom.iso", 10 - this.cleanLevel).setStyle(new Style().setColor(TextFormatting.GOLD))));
+            textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.level", new TextComponentString(cleanLevel.translate()).setStyle(new Style().setColor(TextFormatting.GOLD))));
         } else {
             textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.dirty_state"));
         }
@@ -148,31 +144,31 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
         if (isClean)
             this.cleanLevel = calculateCleanLevel(this.rawLevel);
         else
-            this.cleanLevel = 0;
+            this.cleanLevel = null;
     }
 
-    private int calculateCleanLevel(int rawLevel) {
+    private CleanroomLevel calculateCleanLevel(int rawLevel) {
         if (rawLevel >= 1024)
-            return 9;
+            return CleanroomLevel.ISO1;
         else if (rawLevel >= 512)
-            return 8;
+            return CleanroomLevel.ISO2;
         else if (rawLevel >= 256)
-            return 7;
+            return CleanroomLevel.ISO3;
         else if (rawLevel >= 128)
-            return 6;
+            return CleanroomLevel.ISO4;
         else if (rawLevel >= 64)
-            return 5;
+            return CleanroomLevel.ISO5;
         else if (rawLevel >= 32)
-            return 4;
+            return CleanroomLevel.ISO6;
         else if (rawLevel >= 16)
-            return 3;
+            return CleanroomLevel.ISO7;
         else if (rawLevel >= 8)
-            return 2;
-        return 1;
+            return CleanroomLevel.ISO8;
+        return null;
     }
 
     @Override
-    public int getCleanRoomLevel() {
+    public CleanroomLevel getCleanRoomLevel() {
         return this.cleanLevel;
     }
 

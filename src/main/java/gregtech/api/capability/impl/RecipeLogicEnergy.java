@@ -10,6 +10,7 @@ import gregtech.api.recipes.MatchingMode;
 import gregtech.api.recipes.Recipe;
 import gregtech.api.recipes.RecipeMap;
 import gregtech.api.recipes.recipeproperties.CleanroomProperty;
+import gregtech.api.recipes.recipeproperties.CleanroomProperty.CleanroomLevel;
 import gregtech.common.ConfigHolder;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -67,9 +68,9 @@ public class RecipeLogicEnergy extends AbstractRecipeLogic {
             ICleanroomReceiver cleanroomReceiver = (ICleanroomReceiver) metaTileEntity;
             if (currentRecipe.hasProperty(CleanroomProperty.getInstance())) {
                 if (cleanroomReceiver.hasCleanroom()) {
-                    int cleanroomRequiredLevel = currentRecipe.getProperty(CleanroomProperty.getInstance(), -1);
-                    int cleanroomLevel = cleanroomReceiver.getCleanroom().getCleanRoomLevel();
-                    if (cleanroomRequiredLevel > cleanroomLevel)
+                    CleanroomLevel cleanroomRequiredLevel = currentRecipe.getProperty(CleanroomProperty.getInstance(), null);
+                    CleanroomLevel cleanroomLevel = cleanroomReceiver.getCleanroom().getCleanRoomLevel();
+                    if (cleanroomRequiredLevel.greaterThan(cleanroomLevel))
                         currentRecipe = null;
                 } else {
                     currentRecipe = null;
@@ -102,10 +103,10 @@ public class RecipeLogicEnergy extends AbstractRecipeLogic {
             ICleanroomReceiver cleanroomReceiver = (ICleanroomReceiver) metaTileEntity;
             if (cleanroomReceiver.hasCleanroom() && previousRecipe.hasProperty(CleanroomProperty.getInstance())) {
                 ICleanroomTransmitter cleanroomTransmitter = cleanroomReceiver.getCleanroom();
-                int cleanroomLevel = cleanroomTransmitter.getCleanRoomLevel();
-                int cleanroomRecipeLevel = this.previousRecipe.getProperty(CleanroomProperty.getInstance(), 0);
+                CleanroomLevel cleanroomLevel = cleanroomTransmitter.getCleanRoomLevel();
+                CleanroomLevel cleanroomRecipeLevel = this.previousRecipe.getProperty(CleanroomProperty.getInstance(), null);
 
-                perfectOverclocks = Math.max(cleanroomLevel - cleanroomRecipeLevel, 0);
+                perfectOverclocks = Math.max(cleanroomLevel.getDifference(cleanroomRecipeLevel), 0);
             }
         }
 

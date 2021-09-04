@@ -41,7 +41,7 @@ public abstract class RecipeBuilder<R extends RecipeBuilder<R>> {
     protected int duration, EUt;
     protected boolean hidden = false;
 
-    private int cleanroomLevel = -1;
+    private CleanroomProperty.CleanroomLevel cleanroomLevel = null;
 
     protected EnumValidationResult recipeStatus = EnumValidationResult.VALID;
 
@@ -87,16 +87,16 @@ public abstract class RecipeBuilder<R extends RecipeBuilder<R>> {
     }
 
     public boolean applyProperty(String key, Object value) {
-        if (key.equals(CleanroomProperty.KEY)) {
-            this.cleanroomLevel(((Number) value).intValue());
+        if (key.equals(CleanroomProperty.KEY) && value instanceof CleanroomProperty.CleanroomLevel) {
+            this.cleanroomLevel((CleanroomProperty.CleanroomLevel) value);
             return true;
         }
         return false;
     }
 
-    public RecipeBuilder<R> cleanroomLevel(int minCleanroomLevel) {
-        if (minCleanroomLevel < 0) {
-            GTLog.logger.error("Cleanroom Levels cannot be less than 0", new IllegalArgumentException());
+    public RecipeBuilder<R> cleanroomLevel(CleanroomProperty.CleanroomLevel minCleanroomLevel) {
+        if (minCleanroomLevel == null) {
+            GTLog.logger.error("Cleanroom Level cannot be null", new IllegalArgumentException());
             recipeStatus = EnumValidationResult.INVALID;
         }
         this.cleanroomLevel = minCleanroomLevel;
@@ -371,7 +371,7 @@ public abstract class RecipeBuilder<R extends RecipeBuilder<R>> {
 
     public void buildAndRegister() {
         ValidationResult<Recipe> validationResult = build();
-        if (cleanroomLevel != -1) {
+        if (cleanroomLevel != null) {
             Recipe recipe = validationResult.getResult();
             if (!recipe.setProperty(CleanroomProperty.getInstance(), cleanroomLevel)) {
                 validationResult = ValidationResult.newResult(EnumValidationResult.INVALID, validationResult.getResult());
