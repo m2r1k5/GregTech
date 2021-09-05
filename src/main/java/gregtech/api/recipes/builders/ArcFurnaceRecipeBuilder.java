@@ -26,26 +26,24 @@ public class ArcFurnaceRecipeBuilder extends RecipeBuilder<ArcFurnaceRecipeBuild
         return new ArcFurnaceRecipeBuilder(this);
     }
 
-    @Override
-    public void buildAndRegister() {
+    public ValidationResult<Recipe> build() {
         if (fluidInputs.isEmpty()) {
             fluidInputs(Materials.Oxygen.getFluid(this.duration));
             for (Material material : new Material[]{Materials.Argon, Materials.Nitrogen}) {
                 int plasmaAmount = (int) Math.max(1L, this.duration / (material.getAverageMass() * 16L));
-                RecipeMaps.ARC_FURNACE_RECIPES.recipeBuilder()
+                RecipeBuilder<?> builder = RecipeMaps.ARC_FURNACE_RECIPES.recipeBuilder()
                         .inputsIngredients(this.inputs)
                         .outputs(this.outputs)
                         .duration(Math.max(1, this.duration / 16))
                         .EUt(this.EUt / 3)
                         .fluidInputs(material.getPlasma(plasmaAmount))
-                        .fluidOutputs(material.getFluid(plasmaAmount))
-                        .buildAndRegister();
+                        .fluidOutputs(material.getFluid(plasmaAmount));
+
+                if (this.cleanroomLevel != null)
+                    builder.cleanroomLevel(this.cleanroomLevel);
+                builder.buildAndRegister();
             }
         }
-        super.buildAndRegister();
-    }
-
-    public ValidationResult<Recipe> build() {
         return ValidationResult.newResult(finalizeAndValidate(),
                 new Recipe(inputs, outputs, chancedOutputs, fluidInputs, fluidOutputs, duration, EUt, hidden));
     }

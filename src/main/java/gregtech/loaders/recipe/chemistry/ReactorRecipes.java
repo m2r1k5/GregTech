@@ -1063,7 +1063,6 @@ public class ReactorRecipes {
                 .fluidInputs(Air.getFluid(1000))
                 .output(dust, Plutonium239, 8)
                 .fluidOutputs(Radon.getFluid(100))
-                .cleanroomLevel(CleanroomProperty.CleanroomLevel.ISO8)
                 .duration(12000).EUt(8).buildAndRegister();
 
         CHEMICAL_RECIPES.recipeBuilder()

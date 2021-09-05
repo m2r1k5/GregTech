@@ -33,23 +33,21 @@ public class ChemicalReactorRecipeBuilder extends RecipeBuilder<ChemicalReactorR
         return this;
     }
 
-    @Override
-    public void buildAndRegister() {
+    public ValidationResult<Recipe> build() {
         if (!disableLargeRecipe) {
-            RecipeMaps.LARGE_CHEMICAL_RECIPES.recipeBuilder().copy()
+            RecipeBuilder<?> builder = RecipeMaps.LARGE_CHEMICAL_RECIPES.recipeBuilder().copy()
                     .inputsIngredients(this.inputs)
                     .outputs(this.outputs)
                     .fluidInputs(this.fluidInputs)
                     .fluidOutputs(this.fluidOutputs)
                     .duration(this.duration)
-                    .EUt(this.EUt)
-                    .buildAndRegister();
+                    .EUt(this.EUt);
+
+            if (this.cleanroomLevel != null)
+                builder.cleanroomLevel(this.cleanroomLevel);
+            builder.buildAndRegister();
         }
 
-        super.buildAndRegister();
-    }
-
-    public ValidationResult<Recipe> build() {
         return ValidationResult.newResult(finalizeAndValidate(),
                 new Recipe(inputs, outputs, chancedOutputs, fluidInputs, fluidOutputs, duration, EUt, hidden));
     }

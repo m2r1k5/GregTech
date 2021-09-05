@@ -46,21 +46,21 @@ public class CircuitAssemblerRecipeBuilder extends RecipeBuilder<CircuitAssemble
     @Override
     @Nonnull
     public ValidationResult<Recipe> build() {
+        RecipeBuilder<?> builder = this.copy();
+        RecipeBuilder<?> builder2 = this.copy();
+        if (fluidInputs.isEmpty()) {
+            builder.fluidInputs(Materials.SolderingAlloy.getFluid(Math.max(1, (GTValues.L / 2) * solderMultiplier)));
+            if (this.cleanroomLevel != null)
+                builder.cleanroomLevel(this.cleanroomLevel);
+            builder.buildAndRegister();
+
+            builder2.fluidInputs(Materials.Tin.getFluid(Math.max(1, GTValues.L * solderMultiplier)));
+            if (this.cleanroomLevel != null)
+                builder2.cleanroomLevel(this.cleanroomLevel);
+            builder2.buildAndRegister();
+        }
+
         return ValidationResult.newResult(finalizeAndValidate(),
                 new Recipe(inputs, outputs, chancedOutputs, fluidInputs, fluidOutputs, duration, EUt, hidden));
-    }
-
-    @Override
-    public void buildAndRegister() {
-        if (fluidInputs.isEmpty()) {
-            recipeMap.addRecipe(this.copy()
-                    .fluidInputs(Materials.SolderingAlloy.getFluid(Math.max(1, (GTValues.L / 2) * solderMultiplier)))
-                    .build());
-            recipeMap.addRecipe(this.copy()
-                    .fluidInputs(Materials.Tin.getFluid(Math.max(1, GTValues.L * solderMultiplier)))
-                    .build());
-        } else {
-            recipeMap.addRecipe(build());
-        }
     }
 }

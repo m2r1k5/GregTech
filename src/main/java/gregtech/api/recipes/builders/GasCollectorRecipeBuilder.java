@@ -34,6 +34,7 @@ public class GasCollectorRecipeBuilder extends RecipeBuilder<GasCollectorRecipeB
 
     @Override
     public boolean applyProperty(String key, Object value) {
+        super.applyProperty(key, value);
         if (key.equals(GasCollectorDimensionProperty.KEY)) {
             this.dimension(((Number) value).intValue());
             return true;

@@ -30,15 +30,19 @@ public class UniversalDistillationRecipeBuilder extends RecipeBuilder<UniversalD
         return new UniversalDistillationRecipeBuilder(this);
     }
 
-    @Override
-    public void buildAndRegister() {
+    public ValidationResult<Recipe> build() {
         if (!this.doDistilleryRecipes) {
-            super.buildAndRegister();
-            return;
+            return ValidationResult.newResult(finalizeAndValidate(),
+                    new Recipe(inputs, outputs, chancedOutputs, fluidInputs, fluidOutputs, duration, EUt, hidden));
         }
 
         for (int i = 0; i < fluidOutputs.size(); i++) {
-            IntCircuitRecipeBuilder builder = RecipeMaps.DISTILLERY_RECIPES.recipeBuilder().copy().EUt(Math.max(1, this.EUt / 4)).circuitMeta(i + 1);
+            IntCircuitRecipeBuilder builder = RecipeMaps.DISTILLERY_RECIPES.recipeBuilder().copy()
+                    .EUt(Math.max(1, this.EUt / 4))
+                    .circuitMeta(i + 1);
+
+            if (this.cleanroomLevel != null)
+                builder.cleanroomLevel(this.cleanroomLevel);
 
             int ratio = getRatioForDistillery(this.fluidInputs.get(0), this.fluidOutputs.get(i), this.outputs.size() > 0 ? this.outputs.get(0) : null);
 
@@ -79,10 +83,7 @@ public class UniversalDistillationRecipeBuilder extends RecipeBuilder<UniversalD
             builder.buildAndRegister();
         }
 
-        super.buildAndRegister();
-    }
 
-    public ValidationResult<Recipe> build() {
         return ValidationResult.newResult(finalizeAndValidate(),
                 new Recipe(inputs, outputs, chancedOutputs, fluidInputs, fluidOutputs, duration, EUt, hidden));
     }

@@ -26,24 +26,35 @@ public class CutterRecipeBuilder extends RecipeBuilder<CutterRecipeBuilder> {
 
     @Override
     public ValidationResult<Recipe> build() {
+
+        if (fluidInputs.isEmpty()) {
+            RecipeBuilder<?> builder = this.copy();
+            RecipeBuilder<?> builder2 = this.copy();
+            RecipeBuilder<?> builder3 = this.copy();
+
+            builder.fluidInputs(Materials.Water.getFluid(Math.max(4, Math.min(1000, duration * EUt / 320))))
+                    .duration(duration * 2);
+
+            if (this.cleanroomLevel != null)
+                builder.cleanroomLevel(this.cleanroomLevel);
+            builder.buildAndRegister();
+
+            builder2.fluidInputs(Materials.DistilledWater.getFluid(Math.max(3, Math.min(750, duration * EUt / 426))))
+                    .duration((int) (duration * 1.5));
+
+            if (this.cleanroomLevel != null)
+                builder2.cleanroomLevel(this.cleanroomLevel);
+            builder2.buildAndRegister();
+
+            builder3.fluidInputs(Materials.Lubricant.getFluid(Math.max(1, Math.min(250, duration * EUt / 1280))))
+                    .duration(Math.max(1, duration));
+
+            if (this.cleanroomLevel != null)
+                builder3.cleanroomLevel(this.cleanroomLevel);
+            builder3.buildAndRegister();
+        }
+
         return ValidationResult.newResult(finalizeAndValidate(),
                 new Recipe(inputs, outputs, chancedOutputs, fluidInputs, fluidOutputs, duration, EUt, hidden));
-    }
-
-    @Override
-    public void buildAndRegister() {
-        if (fluidInputs.isEmpty()) {
-            recipeMap.addRecipe(this.copy()
-                    .fluidInputs(Materials.Water.getFluid(Math.max(4, Math.min(1000, duration * EUt / 320))))
-                    .duration(duration * 2).build());
-            recipeMap.addRecipe(this.copy()
-                    .fluidInputs(Materials.DistilledWater.getFluid(Math.max(3, Math.min(750, duration * EUt / 426))))
-                    .duration((int) (duration * 1.5)).build());
-            recipeMap.addRecipe(this.copy()
-                    .fluidInputs(Materials.Lubricant.getFluid(Math.max(1, Math.min(250, duration * EUt / 1280))))
-                    .duration(Math.max(1, duration)).build());
-        } else {
-            recipeMap.addRecipe(build());
-        }
     }
 }

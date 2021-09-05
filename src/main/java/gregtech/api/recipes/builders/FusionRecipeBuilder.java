@@ -32,6 +32,7 @@ public class FusionRecipeBuilder extends RecipeBuilder<FusionRecipeBuilder> {
 
     @Override
     public boolean applyProperty(String key, Object value) {
+        super.applyProperty(key, value);
         if (key.equals("eu_to_start")) {
             this.EUToStart(((Number) value).longValue());
             return true;
@@ -51,6 +52,7 @@ public class FusionRecipeBuilder extends RecipeBuilder<FusionRecipeBuilder> {
     public ValidationResult<Recipe> build() {
         Recipe recipe = new Recipe(inputs, outputs, chancedOutputs, fluidInputs, fluidOutputs,
                 duration, EUt, hidden);
+
         if (!recipe.setProperty(FusionEUToStartProperty.getInstance(), EUToStart)) {
             return ValidationResult.newResult(EnumValidationResult.INVALID, recipe);
         }

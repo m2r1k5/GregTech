@@ -41,7 +41,7 @@ public abstract class RecipeBuilder<R extends RecipeBuilder<R>> {
     protected int duration, EUt;
     protected boolean hidden = false;
 
-    private CleanroomProperty.CleanroomLevel cleanroomLevel = null;
+    protected CleanroomProperty.CleanroomLevel cleanroomLevel = null;
 
     protected EnumValidationResult recipeStatus = EnumValidationResult.VALID;
 
