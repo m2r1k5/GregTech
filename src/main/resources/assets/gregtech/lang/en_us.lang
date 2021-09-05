@@ -2183,7 +2183,25 @@ tile.multiblock_casing.assembler.name=Assembler Machine Casing
 tile.multiblock_casing.assembly_line.name=Assembly Line Casing
 tile.multiblock_casing.fusion.name=Fusion Machine Casing
 tile.multiblock_casing.fusion_mk2.name=Fusion Machine Casing MK II
-tile.multiblock_casing.plascrete.name=Plascrete
+
+# Cleanroom casing blocks
+tile.cleanroom_casing.plascrete.name=Plascrete
+tile.cleanroom_casing.filter_1.name=Filter Casing Mark 1
+tile.cleanroom_casing.filter_1.tooltip=Increases cleanliness by §61.
+tile.cleanroom_casing.filter_2.name=Filter Casing Mark 2
+tile.cleanroom_casing.filter_2.tooltip=Increases cleanliness by §62.
+tile.cleanroom_casing.filter_3.name=Filter Casing Mark 3
+tile.cleanroom_casing.filter_3.tooltip=Increases cleanliness by §64.
+tile.cleanroom_casing.filter_4.name=Filter Casing Mark 4
+tile.cleanroom_casing.filter_4.tooltip=Increases cleanliness by §68.
+tile.cleanroom_casing.filter_5.name=Filter Casing Mark 5
+tile.cleanroom_casing.filter_5.tooltip=Increases cleanliness by §616.
+tile.cleanroom_casing.filter_6.name=Filter Casing Mark 6
+tile.cleanroom_casing.filter_6.tooltip=Increases cleanliness by §632.
+tile.cleanroom_casing.filter_7.name=Filter Casing Mark 7
+tile.cleanroom_casing.filter_7.tooltip=Increases cleanliness by §664.
+tile.cleanroom_casing.filter_8.name=Filter Casing Mark 8
+tile.cleanroom_casing.filter_8.tooltip=Increases cleanliness by §6128.
 
 # Transparent casing blocks
 tile.transparent_casing.reinforced_glass.name=Reinforced Glass
@@ -3563,6 +3581,13 @@ gregtech.machine.fusion_reactor.uv.name=Fusion Reactor Computer Mark 3
 gregtech.machine.large_chemical_reactor.name=Large Chemical Reactor
 
 gregtech.machine.cleanroom.name=Cleanroom
+gregtech.machine.cleanroom.tooltip.1=Provides a clean working environment for machines inside.
+gregtech.machine.cleanroom.tooltip.2=Structure is expandable in any direction up to 15x15x15. The controller must be centered.
+gregtech.machine.cleanroom.tooltip.3=Pass power, items, and fluids into the cleanroom with Machine Hulls or more energy with Diodes in the walls.
+gregtech.machine.cleanroom.tooltip.4=Improve the ISO Rating by increasing the total cleanliness with filter casings.
+gregtech.machine.cleanroom.tooltip.5=Consumes energy equal to the total cleanliness. If it would consume a full amp of power, it will be reduced.
+gregtech.machine.cleanroom.tooltip.6=ISO8 status requires a total cleanliness of 8. Each level requires twice the cleanliness of the previous, with ISO1 being the best.
+gregtech.machine.cleanroom.tooltip.7=Each ISO rating above a recipe's requirement (including none) allows the machines inside to perform one additional perfect overclock.
 
 # Multiblock Tooltips
 gregtech.machine.multiblock.universal.controller_information=Controller block for the §e%s§7.
@@ -3767,7 +3792,7 @@ gregtech.recipe.blast_furnace_temperature=Temperature: %,dK (%s)
 gregtech.recipe.explosive=Explosive: %s
 gregtech.recipe.eu_to_start=Energy To Start: %sEU
 gregtech.recipe.dimensions=Dimensions: %s
-gregtech.recipe.cleanroom=Requires Cleanroom Level %s
+gregtech.recipe.cleanroom=§5Requires %s Cleanroom
 
 gregtech.fluid.click_to_fill=§7Click with a empty fluid container to fill it from tank.
 gregtech.fluid.click_to_fill.shift=§7(Shift-clicking will fill all containers in your hand)
@@ -3902,6 +3927,8 @@ gregtech.multiblock.large_boiler.throttle_modify=Modify Throttle:
 
 gregtech.multiblock.cleanroom.clean_state=Status: §aCLEAN
 gregtech.multiblock.cleanroom.dirty_state=Status: §4CONTAMINATED
+gregtech.multiblock.cleanroom.dirty_state.hover_tooltip=Requires %s status or better to be clean.
+gregtech.multiblock.cleanroom.cleanliness=Current Cleanliness: %s
 gregtech.multiblock.cleanroom.level=Cleanroom Level: %s
 gregtech.multiblock.cleanroom.iso=ISO%s
 

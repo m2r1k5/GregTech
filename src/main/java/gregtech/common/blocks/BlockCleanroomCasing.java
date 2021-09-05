@@ -15,9 +15,9 @@ public class BlockCleanroomCasing extends VariantBlock<BlockCleanroomCasing.casi
     public BlockCleanroomCasing() {
         super(Material.IRON);
         setTranslationKey("cleanroom_casing");
-        setHardness(25.0f);
+        setHardness(20.0f);
         setResistance(10.0f);
-        setSoundType(SoundType.METAL);
+        setSoundType(SoundType.STONE);
         setHarvestLevel("pickaxe", 2);
         setDefaultState(getState(casingType.PLASCRETE));
     }

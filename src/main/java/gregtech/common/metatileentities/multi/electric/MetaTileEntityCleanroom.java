@@ -25,12 +25,17 @@ import gregtech.common.ConfigHolder;
 import gregtech.common.blocks.BlockCleanroomCasing;
 import gregtech.common.blocks.MetaBlocks;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
+import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -131,12 +136,29 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
     @Override
     protected void addDisplayText(List<ITextComponent> textList) {
         super.addDisplayText(textList);
-        if (isClean) {
+        textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.cleanliness", new TextComponentString(this.rawLevel + "")
+                .setStyle(new Style().setColor(TextFormatting.YELLOW))));
+        if (isClean && cleanLevel != null) {
             textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.clean_state"));
-            textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.level", new TextComponentString(cleanLevel.translate()).setStyle(new Style().setColor(TextFormatting.GOLD))));
+            textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.level", new TextComponentString(cleanLevel.translate())
+                    .setStyle(new Style().setColor(TextFormatting.GOLD))));
         } else {
-            textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.dirty_state"));
+            textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.dirty_state").setStyle(new Style().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new TextComponentTranslation("gregtech.multiblock.cleanroom.dirty_state.hover_tooltip",
+                            new TextComponentString(CleanroomLevel.ISO8.translate()).setStyle(new Style().setColor(TextFormatting.GREEN)))))));
         }
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, player, tooltip, advanced);
+        tooltip.add(I18n.format("gregtech.machine.cleanroom.tooltip.1"));
+        tooltip.add(I18n.format("gregtech.machine.cleanroom.tooltip.2"));
+        tooltip.add(I18n.format("gregtech.machine.cleanroom.tooltip.3"));
+        tooltip.add(I18n.format("gregtech.machine.cleanroom.tooltip.4"));
+        tooltip.add(I18n.format("gregtech.machine.cleanroom.tooltip.5"));
+        tooltip.add(I18n.format("gregtech.machine.cleanroom.tooltip.6"));
+        tooltip.add(I18n.format("gregtech.machine.cleanroom.tooltip.7"));
     }
 
     protected void setCleanRecipeCompletion(boolean state) {
