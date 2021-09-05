@@ -24,6 +24,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.common.ConfigHolder;
 import gregtech.common.blocks.BlockCleanroomCasing;
 import gregtech.common.blocks.MetaBlocks;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -63,13 +64,16 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
     @Override
     protected BlockPattern createStructurePattern() {
         return FactoryBlockPattern.start()
-                .aisle("XXXXXXX", "XXX XXX", "XXX XXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX")
-                .aisle("XXXXXXX", "X     X", "X     X", "X     X", "X     X", "X     X", "XFFFFFX").setRepeatable(2, 2)
-                .aisle("XXXXXXX", "       ", "       ", "X     X", "X     X", "X     X", "XFFSFFX")
-                .aisle("XXXXXXX", "X     X", "X     X", "X     X", "X     X", "X     X", "XFFFFFX").setRepeatable(2, 2)
-                .aisle("XXXXXXX", "XXX XXX", "XXX XXX", "XXXXXXX", "XXXXXXX", "XXXXXXX", "XXXXXXX")
-                .where('X', maintenancePredicate(getCasingState()).or(abilityPartPredicate(ALLOWED_ABILITIES)))
-                .where('F', filterPredicate())
+                .aisle("FFFFFFF", "FXXDXXF", "FXXDXXF", "FXXXXXF", "FXXXXXF", "FXXXXXF", "FFFFFFF")
+                .aisle("FXXXXXF", "X     X", "X     X", "X     X", "X     X", "X     X", "FXXXXXF").setRepeatable(2, 2)
+                .aisle("FXXXXXF", "D     D", "D     D", "X     X", "X     X", "X     X", "FXXSXXF")
+                .aisle("FXXXXXF", "X     X", "X     X", "X     X", "X     X", "X     X", "FXXXXXF").setRepeatable(2, 2)
+                .aisle("FFFFFFF", "FXXDXXF", "FXXDXXF", "FXXXXXF", "FXXXXXF", "FXXXXXF", "FFFFFFF")
+                .setAmountLimit('d', 0, 8)
+                .where('X', maintenancePredicate(getCasingState()).or(abilityPartPredicate(ALLOWED_ABILITIES).or(filterPredicate())))
+                .where('F', borderPredicate())
+                .where('D', doorPredicate().or(abilityPartPredicate(ALLOWED_ABILITIES).or(filterPredicate())))
+                .where('d', doorPredicate())
                 .where('S', selfPredicate())
                 .where(' ', innerPredicate())
                 .build();
@@ -88,6 +92,24 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
             BlockCleanroomCasing.casingType casingType = blockCleanroomCasing.getState(blockState);
             blockWorldState.getMatchContext().increment("filterLevel", casingType.getLevel());
             return true;
+        };
+    }
+
+    public static Predicate<BlockWorldState> borderPredicate() {
+        return blockWorldState -> {
+            IBlockState blockState = blockWorldState.getBlockState();
+            if (!(blockState.getBlock() instanceof BlockCleanroomCasing))
+                return false;
+            BlockCleanroomCasing blockCleanroomCasing = (BlockCleanroomCasing) blockState.getBlock();
+            BlockCleanroomCasing.casingType casingType = blockCleanroomCasing.getState(blockState);
+            return casingType == BlockCleanroomCasing.casingType.PLASCRETE;
+        };
+    }
+
+    public static Predicate<BlockWorldState> doorPredicate() {
+        return blockWorldState -> {
+            IBlockState blockState = blockWorldState.getBlockState();
+            return blockState.getBlock() instanceof BlockDoor;
         };
     }
 
