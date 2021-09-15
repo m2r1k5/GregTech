@@ -6,6 +6,7 @@ import gregtech.api.metatileentity.multiblock.MultiblockAbility;
 import gregtech.api.util.IntRange;
 import gregtech.api.util.RelativeDirection;
 import gregtech.common.blocks.BlockCleanroomCasing;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
@@ -20,6 +21,7 @@ import java.util.function.Predicate;
 
 import static gregtech.common.blocks.MetaBlocks.CLEANROOM_CASING;
 
+//todo scan interior and apply changes to it with boolean to toggle
 public class ExpandableBlockPattern extends BlockPattern {
 
     private static final MultiblockAbility<?>[] ALLOWED_ABILITIES = { MultiblockAbility.INPUT_ENERGY, MultiblockAbility.MAINTENANCE_HATCH };
@@ -31,12 +33,12 @@ public class ExpandableBlockPattern extends BlockPattern {
     private int currentFrameDistanceBack;
     private int currentFrameDistanceFront;
 
-    private final int maxframeDistanceLeft;
-    private final int maxframeDistanceRight;
-    private final int maxframeDistanceUp;
-    private final int maxframeDistanceDown;
-    private final int maxframeDistanceBack;
-    private final int maxframeDistanceFront;
+    private final int maxFrameDistanceLeft;
+    private final int maxFrameDistanceRight;
+    private final int maxFrameDistanceUp;
+    private final int maxFrameDistanceDown;
+    private final int maxFrameDistanceBack;
+    private final int maxFrameDistanceFront;
 
     public ExpandableBlockPattern(Predicate<BlockWorldState>[][][] predicatesIn,
                                   List<Pair<Predicate<BlockWorldState>, IntRange>> countMatches,
@@ -45,12 +47,13 @@ public class ExpandableBlockPattern extends BlockPattern {
                                   RelativeDirection[] structureDir,
                                   int[][] aisleRepetitions) {
         super(predicatesIn, countMatches, layerMatchers, validators, structureDir, aisleRepetitions);
-        this.maxframeDistanceLeft = 7;
-        this.maxframeDistanceRight = 7;
-        this.maxframeDistanceUp = 0;
-        this.maxframeDistanceDown = 14;
-        this.maxframeDistanceBack = 7;
-        this.maxframeDistanceFront = 7;
+
+        this.maxFrameDistanceLeft = 7;
+        this.maxFrameDistanceRight = 7;
+        this.maxFrameDistanceUp = 0;
+        this.maxFrameDistanceDown = 14;
+        this.maxFrameDistanceBack = 7;
+        this.maxFrameDistanceFront = 7;
     }
 
     @Override
@@ -86,17 +89,17 @@ public class ExpandableBlockPattern extends BlockPattern {
         BlockPos.MutableBlockPos firstCorner = new BlockPos.MutableBlockPos(centerPos);
 
         // move left
-        int amountLeft = findFrame(world, firstCorner, RelativeDirection.LEFT.apply(facing), this.maxframeDistanceLeft);
+        int amountLeft = findFrame(world, firstCorner, RelativeDirection.LEFT.apply(facing), this.maxFrameDistanceLeft);
         if (amountLeft == -1)
             return null;
 
         // move back
-        int amountBack = findFrame(world, firstCorner, RelativeDirection.BACK.apply(facing), this.maxframeDistanceBack);
+        int amountBack = findFrame(world, firstCorner, RelativeDirection.BACK.apply(facing), this.maxFrameDistanceBack);
         if (amountBack == -1)
             return null;
 
         // move up
-        int amountUp = findFrame(world, firstCorner, RelativeDirection.UP.apply(facing), this.maxframeDistanceUp);
+        int amountUp = findFrame(world, firstCorner, RelativeDirection.UP.apply(facing), this.maxFrameDistanceUp);
         if (amountUp == -1)
             return null;
 
@@ -104,17 +107,17 @@ public class ExpandableBlockPattern extends BlockPattern {
         BlockPos.MutableBlockPos secondCorner = new BlockPos.MutableBlockPos(centerPos);
 
         // move right
-        int amountRight = findFrame(world, secondCorner, RelativeDirection.RIGHT.apply(facing), this.maxframeDistanceRight);
+        int amountRight = findFrame(world, secondCorner, RelativeDirection.RIGHT.apply(facing), this.maxFrameDistanceRight);
         if (amountRight == -1)
             return null;
 
         // move forwards
-        int amountFront = findFrame(world, secondCorner, RelativeDirection.FRONT.apply(facing), this.maxframeDistanceFront);
+        int amountFront = findFrame(world, secondCorner, RelativeDirection.FRONT.apply(facing), this.maxFrameDistanceFront);
         if (amountFront == -1)
             return null;
 
         // move down
-        int amountDown = findFrame(world, secondCorner, RelativeDirection.DOWN.apply(facing), this.maxframeDistanceDown);
+        int amountDown = findFrame(world, secondCorner, RelativeDirection.DOWN.apply(facing), this.maxFrameDistanceDown);
         if (amountDown == -1)
             return null;
 
@@ -364,9 +367,13 @@ public class ExpandableBlockPattern extends BlockPattern {
         return true;
     }
 
+    // todo allow one controller
     public static Predicate<IBlockState> wallPredicate() {
         return blockState -> {
-            return (blockState.getBlock().equals(CLEANROOM_CASING));
+            if (blockState.getBlock().equals(CLEANROOM_CASING))
+                return true;
+
+            return isValidMultiblockPart(blockState.getBlock());
         };
     }
 
@@ -375,7 +382,11 @@ public class ExpandableBlockPattern extends BlockPattern {
             if (blockState.equals(CLEANROOM_CASING.getState(BlockCleanroomCasing.casingType.PLASCRETE)))
                 return true;
 
-            return blockState.getBlock() instanceof IMultiblockAbilityPart<?> && ArrayUtils.contains(ALLOWED_ABILITIES, ((IMultiblockAbilityPart<?>) blockState.getBlock()).getAbility());
+            return isValidMultiblockPart(blockState.getBlock());
         };
+    }
+
+    private static boolean isValidMultiblockPart(Block block) {
+        return block instanceof IMultiblockAbilityPart<?> && ArrayUtils.contains(ALLOWED_ABILITIES, ((IMultiblockAbilityPart<?>) block).getAbility());
     }
 }
