@@ -55,14 +55,18 @@ public class ExpandableBlockPattern extends BlockPattern {
 
     @Override
     public PatternMatchContext checkPatternAt(World world, BlockPos centerPos, EnumFacing facing) {
-        Tuple<BlockPos.MutableBlockPos, BlockPos.MutableBlockPos> corners = getCorners(world, centerPos, facing, maxframeDistanceLeft, maxframeDistanceRight, maxframeDistanceUp, maxframeDistanceDown, maxframeDistanceBack, maxframeDistanceFront);
+        Tuple<BlockPos.MutableBlockPos, BlockPos.MutableBlockPos> corners = getCorners(world, centerPos, facing);
         if (corners == null)
             return null;
 
-        if (!testFrame(world, corners.getFirst(), corners.getSecond(), facing, currentFrameDistanceLeft + currentFrameDistanceRight, currentFrameDistanceDown + currentFrameDistanceUp, currentFrameDistanceBack + currentFrameDistanceFront))
+        int xDistance = currentFrameDistanceLeft + currentFrameDistanceRight;
+        int yDistance = currentFrameDistanceDown + currentFrameDistanceUp;
+        int zDistance = currentFrameDistanceBack + currentFrameDistanceFront;
+
+        if (!testFrame(world, corners.getFirst(), corners.getSecond(), facing, xDistance, yDistance, zDistance))
             return null;
 
-        if (!testWalls(world, corners.getFirst(), corners.getSecond(), facing, currentFrameDistanceLeft + currentFrameDistanceRight, currentFrameDistanceDown + currentFrameDistanceUp, currentFrameDistanceBack + currentFrameDistanceFront))
+        if (!testWalls(world, corners.getFirst(), corners.getSecond(), facing, xDistance, yDistance, zDistance))
             return null;
 
         return super.checkPatternAt(world, centerPos, facing);
@@ -73,66 +77,53 @@ public class ExpandableBlockPattern extends BlockPattern {
      * @param world the world to check the structure in
      * @param centerPos the position of the controller
      * @param facing the direction the controller is facing
-     * @param widthLeft the maximum distance to the left of the controller for a valid wall
-     * @param widthRight the maximum distance to the right of the controller for a valid wall
-     * @param widthFront the maximum distance to the front of the controller for a valid wall
-     * @param widthBack the maximum distance to the back of the controller for a valid wall
-     * @param heightUp the maximum distance up from the controller for a valid wall
-     * @param heightDown the maximum distance down from the controller for a valid wall
-     * @return a Tuple of two MutableBlockPoses representing the back upper left and front lower right corners if found,
-     *          else null
+     * @return a Tuple of 2 MutableBlockPoses for the back upper left and front lower right corners if found, else null
      */
     @Nullable
-    public Tuple<BlockPos.MutableBlockPos, BlockPos.MutableBlockPos> getCorners(World world, BlockPos centerPos, EnumFacing facing,
-                                                                                              int widthLeft,
-                                                                                              int widthRight,
-                                                                                              int heightUp,
-                                                                                              int heightDown,
-                                                                                              int widthBack,
-                                                                                              int widthFront) {
+    public Tuple<BlockPos.MutableBlockPos, BlockPos.MutableBlockPos> getCorners(World world, BlockPos centerPos, EnumFacing facing) {
 
         // find the first corner (back upper left)
         BlockPos.MutableBlockPos firstCorner = new BlockPos.MutableBlockPos(centerPos);
 
         // move left
-        widthLeft = findFrame(world, firstCorner, RelativeDirection.LEFT.apply(facing), widthLeft);
-        if (widthLeft == -1)
+        int amountLeft = findFrame(world, firstCorner, RelativeDirection.LEFT.apply(facing), this.maxframeDistanceLeft);
+        if (amountLeft == -1)
             return null;
 
         // move back
-        widthBack = findFrame(world, firstCorner, RelativeDirection.BACK.apply(facing), widthBack);
-        if (widthBack == -1)
+        int amountBack = findFrame(world, firstCorner, RelativeDirection.BACK.apply(facing), this.maxframeDistanceBack);
+        if (amountBack == -1)
             return null;
 
         // move up
-        heightUp = findFrame(world, firstCorner, RelativeDirection.UP.apply(facing), heightUp);
-        if (heightUp == -1)
+        int amountUp = findFrame(world, firstCorner, RelativeDirection.UP.apply(facing), this.maxframeDistanceUp);
+        if (amountUp == -1)
             return null;
 
         // find the second corner (front lower right)
         BlockPos.MutableBlockPos secondCorner = new BlockPos.MutableBlockPos(centerPos);
 
         // move right
-        widthRight = findFrame(world, secondCorner, RelativeDirection.RIGHT.apply(facing), widthRight);
-        if (widthRight == -1)
+        int amountRight = findFrame(world, secondCorner, RelativeDirection.RIGHT.apply(facing), this.maxframeDistanceRight);
+        if (amountRight == -1)
             return null;
 
         // move forwards
-        widthFront = findFrame(world, secondCorner, RelativeDirection.FRONT.apply(facing), widthFront);
-        if (widthFront == -1)
+        int amountFront = findFrame(world, secondCorner, RelativeDirection.FRONT.apply(facing), this.maxframeDistanceFront);
+        if (amountFront == -1)
             return null;
 
         // move down
-        heightDown = findFrame(world, secondCorner, RelativeDirection.DOWN.apply(facing), heightDown);
-        if (heightDown == -1)
+        int amountDown = findFrame(world, secondCorner, RelativeDirection.DOWN.apply(facing), this.maxframeDistanceDown);
+        if (amountDown == -1)
             return null;
 
-        this.currentFrameDistanceLeft = widthLeft;
-        this.currentFrameDistanceRight = widthRight;
-        this.currentFrameDistanceUp = heightUp;
-        this.currentFrameDistanceDown = heightDown;
-        this.currentFrameDistanceBack = widthBack;
-        this.currentFrameDistanceFront = widthFront;
+        this.currentFrameDistanceLeft = amountLeft;
+        this.currentFrameDistanceRight = amountRight;
+        this.currentFrameDistanceUp = amountUp;
+        this.currentFrameDistanceDown = amountDown;
+        this.currentFrameDistanceBack = amountBack;
+        this.currentFrameDistanceFront = amountFront;
 
         return new Tuple<>(firstCorner, secondCorner);
     }
