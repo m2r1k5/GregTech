@@ -1,13 +1,19 @@
 package gregtech.api.multiblock;
 
 import gnu.trove.map.TIntObjectMap;
+import gregtech.api.capability.ICleanroomReceiver;
+import gregtech.api.capability.ICleanroomTransmitter;
+import gregtech.api.metatileentity.MetaTileEntity;
+import gregtech.api.metatileentity.MetaTileEntityHolder;
 import gregtech.api.metatileentity.multiblock.IMultiblockAbilityPart;
 import gregtech.api.metatileentity.multiblock.MultiblockAbility;
+import gregtech.api.metatileentity.multiblock.MultiblockControllerBase;
 import gregtech.api.util.IntRange;
 import gregtech.api.util.RelativeDirection;
 import gregtech.common.blocks.BlockCleanroomCasing;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
@@ -40,12 +46,18 @@ public class ExpandableBlockPattern extends BlockPattern {
     private final int maxFrameDistanceBack;
     private final int maxFrameDistanceFront;
 
+    private final boolean shouldCheckInterior;
+
+    private MultiblockControllerBase controller;
+
     public ExpandableBlockPattern(Predicate<BlockWorldState>[][][] predicatesIn,
                                   List<Pair<Predicate<BlockWorldState>, IntRange>> countMatches,
                                   TIntObjectMap<Predicate<PatternMatchContext>> layerMatchers,
                                   List<Predicate<PatternMatchContext>> validators,
                                   RelativeDirection[] structureDir,
-                                  int[][] aisleRepetitions) {
+                                  int[][] aisleRepetitions, int maxFrameDistanceLeft, int maxFrameDistanceRight,
+                                  int maxFrameDistanceUp, int maxFrameDistanceDown, int maxFrameDistanceBack,
+                                  int maxFrameDistanceFront, boolean shouldCheckInterior) {
         super(predicatesIn, countMatches, layerMatchers, validators, structureDir, aisleRepetitions);
 
         this.maxFrameDistanceLeft = 7;
@@ -54,10 +66,12 @@ public class ExpandableBlockPattern extends BlockPattern {
         this.maxFrameDistanceDown = 14;
         this.maxFrameDistanceBack = 7;
         this.maxFrameDistanceFront = 7;
+        this.shouldCheckInterior = true;
     }
 
     @Override
     public PatternMatchContext checkPatternAt(World world, BlockPos centerPos, EnumFacing facing) {
+        // get the two opposite corners of the structure, if none are found, there is no valid structure
         Tuple<BlockPos.MutableBlockPos, BlockPos.MutableBlockPos> corners = getCorners(world, centerPos, facing);
         if (corners == null)
             return null;
@@ -66,10 +80,16 @@ public class ExpandableBlockPattern extends BlockPattern {
         int yDistance = currentFrameDistanceDown + currentFrameDistanceUp;
         int zDistance = currentFrameDistanceBack + currentFrameDistanceFront;
 
+        // find and test the frame of the structure, if none are found, there is no valid structure
         if (!testFrame(world, corners.getFirst(), corners.getSecond(), facing, xDistance, yDistance, zDistance))
             return null;
 
+        // find and test the walls of the structure, if none are found, there is no valid structure
         if (!testWalls(world, corners.getFirst(), corners.getSecond(), facing, xDistance, yDistance, zDistance))
+            return null;
+
+        // test the inner section of the structure
+        if (shouldCheckInterior && !testInterior(world, corners.getFirst(), facing, xDistance, yDistance, zDistance))
             return null;
 
         return super.checkPatternAt(world, centerPos, facing);
@@ -367,8 +387,28 @@ public class ExpandableBlockPattern extends BlockPattern {
         return true;
     }
 
+    private boolean testInterior(World world, BlockPos.MutableBlockPos corner, EnumFacing facing, int xDistance, int yDistance, int zDistance) {
+        // align the mutable position to no longer include the frame
+        corner.move(RelativeDirection.FRONT.apply(facing));
+        corner.move(RelativeDirection.RIGHT.apply(facing));
+
+        // for each row of the x axis
+        for (int i = 0; i < xDistance - 2; i++) {
+
+            // for each row of the z axis
+            for (int j = 0; j < zDistance - 2; j++) {
+
+                // test each y axis column
+                if (!testLine(world, corner, RelativeDirection.DOWN.apply(facing), interiorPredicate(), yDistance - 2))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
     // todo allow one controller
-    public static Predicate<IBlockState> wallPredicate() {
+    public Predicate<IBlockState> wallPredicate() {
         return blockState -> {
             if (blockState.getBlock().equals(CLEANROOM_CASING))
                 return true;
@@ -377,7 +417,7 @@ public class ExpandableBlockPattern extends BlockPattern {
         };
     }
 
-    public static Predicate<IBlockState> framePredicate() {
+    public Predicate<IBlockState> framePredicate() {
         return blockState -> {
             if (blockState.equals(CLEANROOM_CASING.getState(BlockCleanroomCasing.casingType.PLASCRETE)))
                 return true;
@@ -388,5 +428,26 @@ public class ExpandableBlockPattern extends BlockPattern {
 
     private static boolean isValidMultiblockPart(Block block) {
         return block instanceof IMultiblockAbilityPart<?> && ArrayUtils.contains(ALLOWED_ABILITIES, ((IMultiblockAbilityPart<?>) block).getAbility());
+    }
+
+    public Predicate<IBlockState> interiorPredicate() {
+        return blockState -> {
+            if (!(blockState.getBlock().hasTileEntity(blockState)))
+                return true;
+
+            //todo figure out how to get a tile entity from IBlockState
+//            TileEntity tileEntity = blockState.getBlock();
+//            if (!(tileEntity instanceof MetaTileEntityHolder))
+//                return true;
+//
+//            MetaTileEntity metaTileEntity = ((MetaTileEntityHolder) tileEntity).getMetaTileEntity();
+//            if (!(metaTileEntity instanceof ICleanroomReceiver))
+//                return true;
+//
+//            ICleanroomReceiver cleanroomReceiver = (ICleanroomReceiver) metaTileEntity;
+//            if (!cleanroomReceiver.hasCleanroom())
+//                cleanroomReceiver.setCleanroom((ICleanroomTransmitter) this.controller);
+            return true;
+        };
     }
 }
