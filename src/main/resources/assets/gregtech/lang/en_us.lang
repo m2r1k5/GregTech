@@ -3925,6 +3925,8 @@ gregtech.multiblock.large_boiler.heat_efficiency.tooltip=The higher boiler tempe
 gregtech.multiblock.large_boiler.throttle.tooltip=Boiler can output less steam and consume less fuel, but it comes with price: the fuel efficiency is lower at higher throttle rates.
 gregtech.multiblock.large_boiler.throttle_modify=Modify Throttle:
 
+gregtech.multiblock.cleanroom.size=Current Size: %s
+gregtech.multiblock.cleanroom.size_modify=Modify Radius:
 gregtech.multiblock.cleanroom.clean_state=Status: §aCLEAN
 gregtech.multiblock.cleanroom.dirty_state=Status: §4CONTAMINATED
 gregtech.multiblock.cleanroom.dirty_state.hover_tooltip=Requires %s status or better to be clean.

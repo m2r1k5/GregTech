@@ -4,6 +4,7 @@ import gregtech.api.GTValues;
 import gregtech.api.capability.ICleanroomReceiver;
 import gregtech.api.capability.ICleanroomTransmitter;
 import gregtech.api.capability.impl.MultiblockRecipeLogic;
+import gregtech.api.gui.widgets.AdvancedTextWidget;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntityHolder;
 import gregtech.api.metatileentity.multiblock.IMultiblockPart;
@@ -28,6 +29,8 @@ import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -38,12 +41,18 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class MetaTileEntityCleanroom extends RecipeMapMultiblockController implements ICleanroomTransmitter {
 
-    private static MultiblockAbility<?>[] ALLOWED_ABILITIES = {
+    public static final int MIN_RADIUS = 2;
+    public static final int MAX_RADIUS = 7;
+
+    private int currentSize = 2;
+
+    private static final MultiblockAbility<?>[] ALLOWED_ABILITIES = {
             MultiblockAbility.INPUT_ENERGY
     };
 
@@ -63,16 +72,60 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
 
     @Override
     protected BlockPattern createStructurePattern() {
+        StringBuilder wall = new StringBuilder("F");     // FXXXF
+        StringBuilder interior = new StringBuilder("X"); // X   X
+        StringBuilder edge = new StringBuilder("F");     // FFFFF
+        StringBuilder top = new StringBuilder("F");      // FXSXF
+
+        for (int i = 0; i < currentSize * 2 - 1; i++) {
+            wall.append("X");
+            interior.append(" ");
+            edge.append("F");
+            if (i == currentSize)
+                top.append("S");
+            else
+                top.append("X");
+        }
+        wall.append("F");
+        interior.append("X");
+        edge.append("F");
+        top.append("F");
+
+        String[] exteriorSlice = new String[currentSize * 2 + 1];
+        String[] interiorSlice = new String[currentSize * 2 + 1];
+        String[] controllerSlice = new String[currentSize * 2 + 1];
+
+        exteriorSlice[0] = edge.toString();
+        interiorSlice[0] = wall.toString();
+        controllerSlice[0] = wall.toString();
+
+        for (int i = 0; i < currentSize * 2 - 1; i++) {
+            exteriorSlice[i + 1] = wall.toString();
+            interiorSlice[i + 1] = interior.toString();
+            controllerSlice[i + 1] = interior.toString();
+        }
+
+        exteriorSlice[currentSize * 2] = edge.toString();
+        interiorSlice[currentSize * 2] = wall.toString();
+        controllerSlice[currentSize * 2] = top.toString();
+
+        System.out.println(Arrays.toString(exteriorSlice));
+        System.out.println(Arrays.toString(interiorSlice));
+        System.out.println(Arrays.toString(interiorSlice));
+        System.out.println(Arrays.toString(controllerSlice));
+        System.out.println(Arrays.toString(interiorSlice));
+        System.out.println(Arrays.toString(interiorSlice));
+        System.out.println(Arrays.toString(exteriorSlice));
+
         return FactoryBlockPattern.start()
-                .aisle("FFFFFFF", "FXXDXXF", "FXXDXXF", "FXXXXXF", "FXXXXXF", "FXXXXXF", "FFFFFFF")
-                .aisle("FXXXXXF", "X     X", "X     X", "X     X", "X     X", "X     X", "FXXXXXF").setRepeatable(2, 2)
-                .aisle("FXXXXXF", "D     D", "D     D", "X     X", "X     X", "X     X", "FXXSXXF")
-                .aisle("FXXXXXF", "X     X", "X     X", "X     X", "X     X", "X     X", "FXXXXXF").setRepeatable(2, 2)
-                .aisle("FFFFFFF", "FXXDXXF", "FXXDXXF", "FXXXXXF", "FXXXXXF", "FXXXXXF", "FFFFFFF")
+                .aisle(exteriorSlice)
+                .aisle(interiorSlice).setRepeatable(currentSize, currentSize)
+                .aisle(controllerSlice)
+                .aisle(interiorSlice).setRepeatable(currentSize, currentSize)
+                .aisle(exteriorSlice)
                 .setAmountLimit('d', 0, 8)
-                .where('X', maintenancePredicate(getCasingState()).or(abilityPartPredicate(ALLOWED_ABILITIES).or(filterPredicate())))
+                .where('X', maintenancePredicate(getCasingState()).or(abilityPartPredicate(ALLOWED_ABILITIES).or(filterPredicate()).or(doorPredicate())))
                 .where('F', borderPredicate())
-                .where('D', doorPredicate().or(abilityPartPredicate(ALLOWED_ABILITIES).or(filterPredicate())))
                 .where('d', doorPredicate())
                 .where('S', selfPredicate())
                 .where(' ', innerPredicate())
@@ -158,8 +211,19 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
     @Override
     protected void addDisplayText(List<ITextComponent> textList) {
         super.addDisplayText(textList);
+        textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.size", this.currentSize));
+        if (!isStructureFormed()) {
+            ITextComponent buttonText = new TextComponentTranslation("gregtech.multiblock.cleanroom.size_modify");
+            buttonText.appendText(" ");
+            buttonText.appendSibling(AdvancedTextWidget.withButton(new TextComponentString("[-]"), "sub"));
+            buttonText.appendText(" ");
+            buttonText.appendSibling(AdvancedTextWidget.withButton(new TextComponentString("[+]"), "add"));
+            textList.add(buttonText);
+        }
+
         textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.cleanliness", new TextComponentString(this.rawLevel + "")
                 .setStyle(new Style().setColor(TextFormatting.YELLOW))));
+
         if (isClean && cleanLevel != null) {
             textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.clean_state"));
             textList.add(new TextComponentTranslation("gregtech.multiblock.cleanroom.level", new TextComponentString(cleanLevel.translate())
@@ -225,6 +289,51 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
     @Override
     public MetaTileEntity getCleanroomTileEntity() {
         return this;
+    }
+
+    public void setCurrentSize(int size) {
+        if (this.currentSize == size || size < MIN_RADIUS || size > MAX_RADIUS)
+            return;
+        this.currentSize = size;
+        reinitializeStructurePattern();
+        checkStructurePattern();
+        writeCustomData(1, buf->{
+            buf.writeInt(size);
+        });
+    }
+
+    @Override
+    public void receiveCustomData(int dataId, PacketBuffer buf) {
+        super.receiveCustomData(dataId, buf);
+        if (dataId == 1) {
+            this.currentSize = buf.readInt();
+            this.reinitializeStructurePattern();
+        }
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound data) {
+        data.setInteger("currentSize", this.currentSize);
+        return super.writeToNBT(data);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound data) {
+        super.readFromNBT(data);
+        this.currentSize = data.hasKey("currentSize") ? data.getInteger("currentSize") : this.currentSize;
+        reinitializeStructurePattern();
+    }
+
+    @Override
+    public void writeInitialSyncData(PacketBuffer buf) {
+        super.writeInitialSyncData(buf);
+        buf.writeInt(this.currentSize);
+    }
+
+    @Override
+    public void receiveInitialSyncData(PacketBuffer buf) {
+        super.receiveInitialSyncData(buf);
+        this.currentSize = buf.readInt();
     }
 
     protected static class CleanroomWorkableHandler extends MultiblockRecipeLogic {

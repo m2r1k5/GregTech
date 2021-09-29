@@ -1,10 +1,6 @@
 package gregtech.api.multiblock;
 
 import gnu.trove.map.TIntObjectMap;
-import gregtech.api.capability.ICleanroomReceiver;
-import gregtech.api.capability.ICleanroomTransmitter;
-import gregtech.api.metatileentity.MetaTileEntity;
-import gregtech.api.metatileentity.MetaTileEntityHolder;
 import gregtech.api.metatileentity.multiblock.IMultiblockAbilityPart;
 import gregtech.api.metatileentity.multiblock.MultiblockAbility;
 import gregtech.api.metatileentity.multiblock.MultiblockControllerBase;
@@ -13,7 +9,6 @@ import gregtech.api.util.RelativeDirection;
 import gregtech.common.blocks.BlockCleanroomCasing;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
@@ -27,7 +22,7 @@ import java.util.function.Predicate;
 
 import static gregtech.common.blocks.MetaBlocks.CLEANROOM_CASING;
 
-//todo scan interior and apply changes to it with boolean to toggle
+//todo non-functional - needs finishing and implementing
 public class ExpandableBlockPattern extends BlockPattern {
 
     private static final MultiblockAbility<?>[] ALLOWED_ABILITIES = { MultiblockAbility.INPUT_ENERGY, MultiblockAbility.MAINTENANCE_HATCH };
@@ -69,6 +64,7 @@ public class ExpandableBlockPattern extends BlockPattern {
         this.shouldCheckInterior = true;
     }
 
+    //todo scan interior and apply changes to it with boolean to toggle
     @Override
     public PatternMatchContext checkPatternAt(World world, BlockPos centerPos, EnumFacing facing) {
         // get the two opposite corners of the structure, if none are found, there is no valid structure
