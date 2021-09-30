@@ -4,6 +4,7 @@ import gregtech.api.GTValues;
 import gregtech.api.capability.ICleanroomReceiver;
 import gregtech.api.capability.ICleanroomTransmitter;
 import gregtech.api.capability.impl.MultiblockRecipeLogic;
+import gregtech.api.gui.Widget;
 import gregtech.api.gui.widgets.AdvancedTextWidget;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntityHolder;
@@ -47,14 +48,13 @@ import java.util.function.Predicate;
 
 public class MetaTileEntityCleanroom extends RecipeMapMultiblockController implements ICleanroomTransmitter {
 
-    public static final int MIN_RADIUS = 2;
-    public static final int MAX_RADIUS = 7;
-
-    private int currentSize = 2;
-
     private static final MultiblockAbility<?>[] ALLOWED_ABILITIES = {
             MultiblockAbility.INPUT_ENERGY
     };
+
+    public static final int MIN_RADIUS = 2;
+    public static final int MAX_RADIUS = 7;
+    private int currentSize = 2;
 
     private CleanroomLevel cleanLevel;
     private int rawLevel;
@@ -77,11 +77,15 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
         StringBuilder edge = new StringBuilder("F");     // FFFFF
         StringBuilder top = new StringBuilder("F");      // FXSXF
 
+        // todo why is currentSize ever zero?
+        if (this.currentSize < MIN_RADIUS || this.currentSize > MAX_RADIUS)
+            this.currentSize = 2;
+
         for (int i = 0; i < currentSize * 2 - 1; i++) {
             wall.append("X");
             interior.append(" ");
             edge.append("F");
-            if (i == currentSize)
+            if (i == currentSize - 1)
                 top.append("S");
             else
                 top.append("X");
@@ -119,9 +123,9 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
 
         return FactoryBlockPattern.start()
                 .aisle(exteriorSlice)
-                .aisle(interiorSlice).setRepeatable(currentSize, currentSize)
+                .aisle(interiorSlice).setRepeatable(currentSize / 2, currentSize / 2)
                 .aisle(controllerSlice)
-                .aisle(interiorSlice).setRepeatable(currentSize, currentSize)
+                .aisle(interiorSlice).setRepeatable(currentSize / 2, currentSize / 2)
                 .aisle(exteriorSlice)
                 .setAmountLimit('d', 0, 8)
                 .where('X', maintenancePredicate(getCasingState()).or(abilityPartPredicate(ALLOWED_ABILITIES).or(filterPredicate()).or(doorPredicate())))
@@ -236,6 +240,13 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
     }
 
     @Override
+    protected void handleDisplayClick(String componentData, Widget.ClickData clickData) {
+        super.handleDisplayClick(componentData, clickData);
+        int modifier = componentData.equals("add") ? 1 : -1;
+        setCurrentSize(this.currentSize + modifier);
+    }
+
+    @Override
     public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, player, tooltip, advanced);
         tooltip.add(I18n.format("gregtech.machine.cleanroom.tooltip.1"));
@@ -297,7 +308,7 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
         this.currentSize = size;
         reinitializeStructurePattern();
         checkStructurePattern();
-        writeCustomData(1, buf->{
+        writeCustomData(557, buf->{
             buf.writeInt(size);
         });
     }
@@ -305,7 +316,7 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
     @Override
     public void receiveCustomData(int dataId, PacketBuffer buf) {
         super.receiveCustomData(dataId, buf);
-        if (dataId == 1) {
+        if (dataId == 557) {
             this.currentSize = buf.readInt();
             this.reinitializeStructurePattern();
         }
