@@ -213,6 +213,9 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
             buttonText.appendSibling(AdvancedTextWidget.withButton(new TextComponentString("[-]"), "sub"));
             buttonText.appendText(" ");
             buttonText.appendSibling(AdvancedTextWidget.withButton(new TextComponentString("[+]"), "add"));
+            buttonText.setStyle(new Style().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new TextComponentTranslation("gregtech.multiblock.cleanroom.size_explanation")
+                            .setStyle(new Style().setColor(TextFormatting.GRAY)))));
             textList.add(buttonText);
         }
 
