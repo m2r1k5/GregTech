@@ -42,7 +42,6 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -113,19 +112,11 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
         interiorSlice[currentSize * 2] = wall.toString();
         controllerSlice[currentSize * 2] = top.toString();
 
-        System.out.println(Arrays.toString(exteriorSlice));
-        for (int i = 0; i < currentSize - 1; i++)
-            System.out.println(Arrays.toString(interiorSlice));
-        System.out.println(Arrays.toString(controllerSlice));
-        for (int i = 0; i < currentSize - 1; i++)
-            System.out.println(Arrays.toString(interiorSlice));
-        System.out.println(Arrays.toString(exteriorSlice));
-
         return FactoryBlockPattern.start()
                 .aisle(exteriorSlice)
-                .aisle(interiorSlice).setRepeatable(currentSize / 2, currentSize / 2)
+                .aisle(interiorSlice).setRepeatable(currentSize - 1, currentSize - 1)
                 .aisle(controllerSlice)
-                .aisle(interiorSlice).setRepeatable(currentSize / 2, currentSize / 2)
+                .aisle(interiorSlice).setRepeatable(currentSize - 1, currentSize - 1)
                 .aisle(exteriorSlice)
                 .setAmountLimit('d', 0, 8)
                 .where('X', maintenancePredicate(getCasingState()).or(abilityPartPredicate(ALLOWED_ABILITIES).or(filterPredicate()).or(doorPredicate())))
