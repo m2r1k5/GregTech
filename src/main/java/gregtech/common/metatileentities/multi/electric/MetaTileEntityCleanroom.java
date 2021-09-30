@@ -114,11 +114,11 @@ public class MetaTileEntityCleanroom extends RecipeMapMultiblockController imple
         controllerSlice[currentSize * 2] = top.toString();
 
         System.out.println(Arrays.toString(exteriorSlice));
-        System.out.println(Arrays.toString(interiorSlice));
-        System.out.println(Arrays.toString(interiorSlice));
+        for (int i = 0; i < currentSize - 1; i++)
+            System.out.println(Arrays.toString(interiorSlice));
         System.out.println(Arrays.toString(controllerSlice));
-        System.out.println(Arrays.toString(interiorSlice));
-        System.out.println(Arrays.toString(interiorSlice));
+        for (int i = 0; i < currentSize - 1; i++)
+            System.out.println(Arrays.toString(interiorSlice));
         System.out.println(Arrays.toString(exteriorSlice));
 
         return FactoryBlockPattern.start()

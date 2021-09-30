@@ -253,6 +253,14 @@ public class MixerRecipes {
                 .output(dust, BlueSteel, 8)
                 .buildAndRegister();
 
+        MIXER_RECIPES.recipeBuilder().duration(300).EUt(24)
+                .input(dust, Vanadium)
+                .input(dust, Chrome)
+                .input(dust, Iron, 7)
+                .notConsumable(new IntCircuitIngredient(1))
+                .output(dust, VanadiumSteel, 9)
+                .buildAndRegister();
+
         MIXER_RECIPES.recipeBuilder().duration(900).EUt(480)
                 .input(dust, Cobalt, 5)
                 .input(dust, Chrome, 2)
