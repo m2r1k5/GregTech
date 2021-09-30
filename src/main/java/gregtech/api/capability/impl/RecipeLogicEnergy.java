@@ -89,7 +89,7 @@ public class RecipeLogicEnergy extends AbstractRecipeLogic {
             this.invalidInputsForRecipes = true;
 
         // proceed if we have a usable recipe.
-        if (currentRecipe != null && setupAndConsumeRecipeInputs(currentRecipe))
+        if (currentRecipe != null && setupAndConsumeRecipeInputs(currentRecipe, getInputInventory()))
             setupRecipe(currentRecipe);
         // Inputs have been inspected.
         metaTileEntity.getNotifiedItemInputList().clear();
