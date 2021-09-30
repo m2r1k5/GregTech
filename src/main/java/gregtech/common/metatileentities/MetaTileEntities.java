@@ -470,7 +470,7 @@ public class MetaTileEntities {
         STEAM_OVEN = registerMetaTileEntity(1023, new MetaTileEntitySteamOven(gregtechId("steam_oven")));
         STEAM_GRINDER = registerMetaTileEntity(1024, new MetaTileEntitySteamGrinder(gregtechId("steam_grinder")));
 
-        CLEANROOM = GregTechAPI.registerMetaTileEntity(1025, new MetaTileEntityCleanroom(gregtechId("cleanroom")));
+        CLEANROOM = registerMetaTileEntity(1025, new MetaTileEntityCleanroom(gregtechId("cleanroom")));
 
         // MISC MTE's START: IDs 1150-2000
 
