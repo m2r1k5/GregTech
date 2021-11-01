@@ -1,6 +1,8 @@
 package gregtech.api.unification;
 
 import crafttweaker.annotations.ZenRegister;
+import gregtech.api.unification.element.Isotope;
+import gregtech.api.util.GTControlledRegistry;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -11,15 +13,22 @@ import java.util.Map;
 @ZenRegister
 public class Elements {
 
+    /**
+     * Maximum number of elements that are allowed to be registered.
+     */
+    public static final int MAX_ELEMENTS = 250;
+
+    //private static final GTControlledRegistry<String, Element> ELEMENTS = new GTControlledRegistry<>(MAX_ELEMENTS);
+
     private static final Map<String, Element> elements = new HashMap<>();
 
     private Elements() {
     }
 
-    public static final Element H = add(1, 0, "Hydrogen", "H");
+    public static final Element H = add(1, 0, "Hydrogen", "H", 1, 7);
     public static final Element D = add(1, 1, "Deuterium", "D");
     public static final Element T = add(1, 2, "Tritium", "T");
-    public static final Element He = add(2, 2, "Helium", "He", 3);
+    public static final Element He = add(2, 2, "Helium", "He", 2, 10, 3);
 
     // TODO Remove
     public static final Element He3 = add(2, 1, "Helium-3", "He-3");
@@ -113,9 +122,9 @@ public class Elements {
     public static final Element Ac = add(89, 136, "Actinium", "Ac");
     public static final Element Th = add(90, 140, "Thorium", "Th");
     public static final Element Pa = add(91, 138, "Protactinium", "Pa");
-    public static final Element U = add(92, 146, "Uranium", "U", 235, 238);
+    public static final Element U = add(92, 146, "Uranium", "U", 217, 242, 235, 238);
     public static final Element Np = add(93, 144, "Neptunium", "Np");
-    public static final Element Pu = add(94, 152, "Plutonium", "Pu", 239, 241);
+    public static final Element Pu = add(94, 152, "Plutonium", "Pu", 228, 247, 239, 241);
 
     // TODO remove
     public static final Element U238 = add(92, 146, "Uranium-238", "U-238");
@@ -166,11 +175,16 @@ public class Elements {
 
     // TODO Cosmic Neutronium, other Gregicality Elements
 
-    @ZenMethod
-    public static Element add(long protons, long neutrons, String name, String symbol, int... isotopes) {
-        Element element = new Element(protons, neutrons, name, symbol, isotopes);
+    @ZenMethod // todo
+    public static Element add(long protons, long neutrons, String name, String symbol, int isotopeStart, int isotopeEnd, int... generatedIsotopes) {
+        Element element = new Element(protons, neutrons, name, symbol, isotopeStart, isotopeEnd, generatedIsotopes);
+        //ELEMENTS.register(name, element);
         elements.put(name, element);
         return element;
+    }
+
+    public static Element add(long protons, long neutrons, String name, String symbol) {
+        return add(protons, neutrons, name, symbol, 0, 0);
     }
 
     @ZenMethod
