@@ -187,13 +187,12 @@ public class Material implements Comparable<Material> {
         return materialInfo.iconSet;
     }
 
-    @ZenGetter("radioactive")
-    public boolean isRadioactive() {
-        if (materialInfo.element != null)
-            return materialInfo.element.halfLifeSeconds >= 0;
-        for (MaterialStack material : materialInfo.componentList)
-            if (material.material.isRadioactive()) return true;
-        return false;
+    // TODO - Remove "average" methods, keep behavior from them and rename to without "average" in them
+    // TODO - Revert to CE element used for default values for Protons, Neutrons, and Mass
+
+    @ZenGetter("hasIsotopes")
+    public boolean hasIsotopes() {
+        return materialInfo.element != null && materialInfo.element.hasIsotopes();
     }
 
     @ZenGetter("protons")
@@ -201,12 +200,13 @@ public class Material implements Comparable<Material> {
         if (materialInfo.element != null)
             return materialInfo.element.getProtons();
         if (materialInfo.componentList.isEmpty())
-            return Elements.get("Neutronium").getProtons();
-        long totalProtons = 0;
+            return Math.max(1, Elements.get("Neutronium").getProtons());
+        long totalProtons = 0, totalAmount = 0;
         for (MaterialStack material : materialInfo.componentList) {
+            totalAmount += material.amount;
             totalProtons += material.amount * material.material.getProtons();
         }
-        return totalProtons;
+        return totalProtons / totalAmount;
     }
 
     @ZenGetter("neutrons")
@@ -215,57 +215,17 @@ public class Material implements Comparable<Material> {
             return materialInfo.element.getNeutrons();
         if (materialInfo.componentList.isEmpty())
             return Elements.get("Neutronium").getNeutrons();
-        long totalNeutrons = 0;
-        for (MaterialStack material : materialInfo.componentList) {
-            totalNeutrons += material.amount * material.material.getNeutrons();
-        }
-        return totalNeutrons;
-    }
-
-    @ZenGetter("mass")
-    public long getMass() {
-        if (materialInfo.element != null)
-            return materialInfo.element.getMass();
-        if (materialInfo.componentList.isEmpty())
-            return Elements.get("Neutronium").getMass();
-        long totalMass = 0;
-        for (MaterialStack material : materialInfo.componentList) {
-            totalMass += material.amount * material.material.getMass();
-        }
-        return totalMass;
-    }
-
-    @ZenGetter("averageProtons")
-    public long getAverageProtons() {
-        if (materialInfo.element != null)
-            return materialInfo.element.getProtons();
-        if (materialInfo.componentList.isEmpty())
-            return Math.max(1, Elements.get("Neutronium").getProtons());
-        long totalProtons = 0, totalAmount = 0;
-        for (MaterialStack material : materialInfo.componentList) {
-            totalAmount += material.amount;
-            totalProtons += material.amount * material.material.getAverageProtons();
-        }
-        return totalProtons / totalAmount;
-    }
-
-    @ZenGetter("averageNeutrons")
-    public long getAverageNeutrons() {
-        if (materialInfo.element != null)
-            return materialInfo.element.getNeutrons();
-        if (materialInfo.componentList.isEmpty())
-            return Elements.get("Neutronium").getNeutrons();
         long totalNeutrons = 0, totalAmount = 0;
         for (MaterialStack material : materialInfo.componentList) {
             totalAmount += material.amount;
-            totalNeutrons += material.amount * material.material.getAverageNeutrons();
+            totalNeutrons += material.amount * material.material.getNeutrons();
         }
         return totalNeutrons / totalAmount;
     }
 
 
-    @ZenGetter("averageMass")
-    public long getAverageMass() {
+    @ZenGetter("mass")
+    public long getMass() {
         if (materialInfo.element != null)
             return materialInfo.element.getMass();
         if (materialInfo.componentList.size() <= 0)
@@ -273,7 +233,7 @@ public class Material implements Comparable<Material> {
         long totalMass = 0, totalAmount = 0;
         for (MaterialStack material : materialInfo.componentList) {
             totalAmount += material.amount;
-            totalMass += material.amount * material.material.getAverageMass();
+            totalMass += material.amount * material.material.getMass();
         }
         return totalMass / totalAmount;
     }

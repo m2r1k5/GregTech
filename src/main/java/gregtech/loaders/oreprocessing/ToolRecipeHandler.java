@@ -1,6 +1,5 @@
 package gregtech.loaders.oreprocessing;
 
-import gregtech.api.GTValues;
 import gregtech.api.capability.GregtechCapabilities;
 import gregtech.api.items.metaitem.MetaItem.MetaValueItem;
 import gregtech.api.items.toolitem.ToolMetaItem.MetaToolValueItem;
@@ -16,7 +15,6 @@ import gregtech.api.unification.ore.OrePrefix;
 import gregtech.api.unification.stack.UnificationEntry;
 import gregtech.common.ConfigHolder;
 import gregtech.common.items.MetaItems;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -288,7 +286,7 @@ public class ToolRecipeHandler {
                 .input(OrePrefix.ingot, material, 3)
                 .notConsumable(MetaItems.SHAPE_EXTRUDER_AXE)
                 .outputs(OreDictUnifier.get(toolPrefix, material))
-                .duration((int) material.getAverageMass() * 3)
+                .duration((int) material.getMass() * 3)
                 .EUt(8 * voltageMultiplier)
                 .buildAndRegister();
 
@@ -303,7 +301,7 @@ public class ToolRecipeHandler {
                 .input(OrePrefix.ingot, material, 3)
                 .notConsumable(MetaItems.SHAPE_EXTRUDER_HOE)
                 .outputs(OreDictUnifier.get(toolPrefix, material))
-                .duration((int) material.getAverageMass() * 3)
+                .duration((int) material.getMass() * 3)
                 .EUt(8 * voltageMultiplier)
                 .buildAndRegister();
     }
@@ -317,7 +315,7 @@ public class ToolRecipeHandler {
                 .input(OrePrefix.ingot, material, 3)
                 .notConsumable(MetaItems.SHAPE_EXTRUDER_PICKAXE)
                 .outputs(OreDictUnifier.get(toolPrefix, material))
-                .duration((int) material.getAverageMass() * 3)
+                .duration((int) material.getMass() * 3)
                 .EUt(8 * voltageMultiplier)
                 .buildAndRegister();
 
@@ -332,7 +330,7 @@ public class ToolRecipeHandler {
                 .input(OrePrefix.ingot, material, 2)
                 .notConsumable(MetaItems.SHAPE_EXTRUDER_SAW)
                 .outputs(OreDictUnifier.get(OrePrefix.toolHeadSaw, material))
-                .duration((int) material.getAverageMass() * 2)
+                .duration((int) material.getMass() * 2)
                 .EUt(8 * voltageMultiplier)
                 .buildAndRegister();
     }
@@ -350,7 +348,7 @@ public class ToolRecipeHandler {
                 .input(OrePrefix.ingot, material)
                 .notConsumable(MetaItems.SHAPE_EXTRUDER_SHOVEL)
                 .outputs(OreDictUnifier.get(toolPrefix, material))
-                .duration((int) material.getAverageMass())
+                .duration((int) material.getMass())
                 .EUt(8 * voltageMultiplier)
                 .buildAndRegister();
     }
@@ -364,7 +362,7 @@ public class ToolRecipeHandler {
                 .input(OrePrefix.ingot, material, 2)
                 .notConsumable(MetaItems.SHAPE_EXTRUDER_SWORD)
                 .outputs(OreDictUnifier.get(toolPrefix, material))
-                .duration((int) material.getAverageMass() * 2)
+                .duration((int) material.getMass() * 2)
                 .EUt(8 * voltageMultiplier)
                 .buildAndRegister();
     }
@@ -393,7 +391,7 @@ public class ToolRecipeHandler {
                     .input(OrePrefix.ingot, material, 6)
                     .notConsumable(MetaItems.SHAPE_EXTRUDER_HAMMER)
                     .outputs(OreDictUnifier.get(toolPrefix, material))
-                    .duration((int) material.getAverageMass() * 6)
+                    .duration((int) material.getMass() * 6)
                     .EUt(8 * voltageMultiplier)
                     .buildAndRegister();
         }
@@ -416,7 +414,7 @@ public class ToolRecipeHandler {
                 .input(OrePrefix.ingot, material, 2)
                 .notConsumable(MetaItems.SHAPE_EXTRUDER_FILE)
                 .outputs(OreDictUnifier.get(toolPrefix, material))
-                .duration((int) material.getAverageMass() * 2)
+                .duration((int) material.getMass() * 2)
                 .EUt(8 * voltageMultiplier)
                 .buildAndRegister();
 

@@ -31,7 +31,7 @@ public class ArcFurnaceRecipeBuilder extends RecipeBuilder<ArcFurnaceRecipeBuild
         if (fluidInputs.isEmpty()) {
             fluidInputs(Materials.Oxygen.getFluid(this.duration));
             for (Material material : new Material[]{Materials.Argon, Materials.Nitrogen}) {
-                int plasmaAmount = (int) Math.max(1L, this.duration / (material.getAverageMass() * 16L));
+                int plasmaAmount = (int) Math.max(1L, this.duration / (material.getMass() * 16L));
                 RecipeMaps.ARC_FURNACE_RECIPES.recipeBuilder()
                         .inputsIngredients(this.inputs)
                         .outputs(this.outputs)
