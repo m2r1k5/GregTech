@@ -1,8 +1,6 @@
 package gregtech.api.unification;
 
 import crafttweaker.annotations.ZenRegister;
-import gregtech.api.unification.element.Isotope;
-import gregtech.api.util.GTControlledRegistry;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -25,14 +23,15 @@ public class Elements {
     private Elements() {
     }
 
-    public static final Element H = add(1, 0, "Hydrogen", "H", 1, 7);
-    public static final Element D = add(1, 1, "Deuterium", "D");
-    public static final Element T = add(1, 2, "Tritium", "T");
-    public static final Element He = add(2, 2, "Helium", "He", 2, 10, 3);
-
-    // TODO Remove
+    // TODO remove
     public static final Element He3 = add(2, 1, "Helium-3", "He-3");
+    public static final Element U238 = add(92, 146, "Uranium-238", "U-238");
+    public static final Element U235 = add(92, 143, "Uranium-235", "U-235");
+    public static final Element Pu239 = add(94, 145, "Plutonium-239", "Pu-239");
+    public static final Element Pu241 = add(94, 149, "Plutonium-241", "Pu-241");
 
+    public static final Element H = add(1, 0, "Hydrogen", "H", 1, 7);
+    public static final Element He = add(2, 2, "Helium", "He", 2, 10, 3);
     public static final Element Li = add(3, 4, "Lithium", "Li");
     public static final Element Be = add(4, 5, "Beryllium", "Be");
     public static final Element B = add(5, 5, "Boron", "B");
@@ -125,13 +124,6 @@ public class Elements {
     public static final Element U = add(92, 146, "Uranium", "U", 217, 242, 235, 238);
     public static final Element Np = add(93, 144, "Neptunium", "Np");
     public static final Element Pu = add(94, 152, "Plutonium", "Pu", 228, 247, 239, 241);
-
-    // TODO remove
-    public static final Element U238 = add(92, 146, "Uranium-238", "U-238");
-    public static final Element U235 = add(92, 143, "Uranium-235", "U-235");
-    public static final Element Pu239 = add(94, 145, "Plutonium-239", "Pu-239");
-    public static final Element Pu241 = add(94, 149, "Plutonium-241", "Pu-241");
-
     public static final Element Am = add(95, 150, "Americium", "Am");
     public static final Element Cm = add(96, 153, "Curium", "Cm");
     public static final Element Bk = add(97, 152, "Berkelium", "Bk");
@@ -157,23 +149,21 @@ public class Elements {
     public static final Element Ts = add(117, 177, "Tennessine", "Ts");
     public static final Element Og = add(118, 176, "Oganesson", "Og");
 
-
-    //fantasy todo Naquadah element names
+    //fantasy
     public static final Element Tr = add(119, 178, "Tritanium", "Tr");
     public static final Element Dr = add(120, 180, "Duranium", "Dr");
-
-    // TODO do these need to be done as proper elements?
     public static final Element Nq = add(121, 172, "Naquadah", "Nq");
-    public static final Element Nq1 = add(121, 172, "NaquadahEnriched", "Nq+");
-    public static final Element Nq2 = add(121, 172, "Naquadria", "*Nq*");
-
     public static final Element Nt = add(0, 5000, "Neutronium", "Nt");
     public static final Element Ke = add(1000, 1500, "Trinium", "Ke");
     public static final Element Ad = add(750, 1000, "Adamantium", "Ad");
     public static final Element Vb = add(850, 900, "Vibranium", "Vb");
     public static final Element Tn = add(550, 670, "Taranium", "Tn");
 
-    // TODO Cosmic Neutronium, other Gregicality Elements
+    // Special-case isotopes
+    public static final Element D = add(1, 1, "Deuterium", "D");
+    public static final Element T = add(1, 2, "Tritium", "T");
+    public static final Element Nq1 = add(121, 172, "NaquadahEnriched", "Nq+");
+    public static final Element Nq2 = add(121, 172, "Naquadria", "*Nq*");
 
     @ZenMethod // todo
     public static Element add(long protons, long neutrons, String name, String symbol, int isotopeStart, int isotopeEnd, int... generatedIsotopes) {

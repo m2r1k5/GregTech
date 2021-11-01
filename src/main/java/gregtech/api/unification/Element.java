@@ -6,7 +6,9 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,10 +25,10 @@ public class Element {
     public final long mass;
 
     // Maximum of 256 isotopes per element
+    private final int isotopeStart;
+    private final int isotopeEnd;
     private final Map<Integer, Isotope> isotopes = new HashMap<>();
 
-    // TODO - Remove "halfLifeSeconds," "isIsotope," and "decayTo," rework to new system
-    //
     // TODO - Isotope System
     // TODO -   - Keep a list of Protons for the isotopes
     // TODO -   - Materials with an Element should be in their own MetaItem "gregtech:element"
@@ -50,25 +52,29 @@ public class Element {
         this.mass = protons + neutrons;
         this.name = name;
         this.symbol = symbol;
-        calculateIsotopes(isotopeStart, isotopeEnd, generatedIsotopes);
-    }
-
-    private void calculateIsotopes(int isotopeStart, int isotopeEnd, int[] isotopes) {
-        if (isotopeStart == 0 || isotopeStart > isotopeEnd) return;
-        for (int i = isotopeStart; i <= isotopeEnd; i++) {
-            this.isotopes.put(i, new Isotope(i));
+        this.isotopeStart = isotopeStart;
+        this.isotopeEnd = isotopeEnd;
+        if (isotopeStart > 0 && isotopeStart < isotopeEnd) {
+            addGeneratedIsotopes(generatedIsotopes);
         }
-        addGeneratedIsotopes(isotopes);
     }
 
     public void addGeneratedIsotopes(int... isotopes) {
         for (int i : isotopes) {
-            Isotope isotope = this.isotopes.get(i);
-            if (isotope != null) {
-                isotope.shouldGenerate = true;
-                isotope.enableUnification = true;
-            }
+            if (i < isotopeStart || i > isotopeEnd || this.isotopes.containsKey(i)) continue;
+            Isotope isotope = new Isotope(i, true);
+            isotope.setElement(this);
+            this.isotopes.put(i, isotope);
         }
+    }
+
+    public int getMaximumIsotopes() {
+        if (isotopeStart <= 0 || isotopeStart > isotopeEnd) return 0;
+        return isotopeEnd - isotopeStart + 1;
+    }
+
+    public List<Isotope> getIsotopes() {
+        return new ArrayList<>(isotopes.values());
     }
 
     @ZenGetter("name")
