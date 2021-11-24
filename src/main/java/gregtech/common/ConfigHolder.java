@@ -205,6 +205,9 @@ public class ConfigHolder {
             @Config.Comment("Require Wrench to break machines? Default: false")
             public boolean requireWrenchForMachines = false;
 
+            @Config.Comment("Whether to cause simple machines to explode during rainfall when not covered, like in GT5U. Please do not turn this on unless you absolutely want to, this is pain. Default: false")
+            public boolean canMachinesExplodeInRain = false;
+
             @Config.Comment("Change the recipe of rods to result in 1 stick and 2 small piles of dusts. Default: false")
             @Config.RequiresMcRestart
             public boolean harderRods = false;

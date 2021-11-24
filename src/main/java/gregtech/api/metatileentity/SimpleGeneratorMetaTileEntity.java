@@ -18,11 +18,14 @@ import gregtech.api.gui.widgets.TankWidget;
 import gregtech.api.recipes.machines.FuelRecipeMap;
 import gregtech.api.render.OrientedOverlayRenderer;
 import gregtech.api.render.Textures;
+import gregtech.api.util.GTUtility;
 import gregtech.api.util.PipelineUtil;
+import gregtech.common.ConfigHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -110,6 +113,16 @@ public class SimpleGeneratorMetaTileEntity extends TieredMetaTileEntity {
         if (!getWorld().isRemote && !containerInventory.getStackInSlot(0).isEmpty()) {
             fillContainerFromInternalTank(containerInventory, containerInventory, 0, 1);
             fillInternalTankFromFluidContainer(containerInventory, containerInventory, 0, 1);
+
+            if (getOffsetTimer() % 1000 == 0) {
+                if ((getCoverAtSide(EnumFacing.UP) == null && this.getWorld().getPrecipitationHeight(getPos()).getY() - 2 < this.getPos().getY())) {
+                    if (ConfigHolder.U.GT5u.canMachinesExplodeInRain && this.getWorld().isRaining() && this.getWorld().getBiome(this.getPos()).getRainfall() > 0) {
+                        if (GTUtility.getRandomIntXSTR(10) == 0) {
+                            GTUtility.doOvervoltageExplosion(this, 32);
+                        }
+                    }
+                }
+            }
         }
     }
 

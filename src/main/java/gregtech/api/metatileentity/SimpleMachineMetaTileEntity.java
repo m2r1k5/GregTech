@@ -17,6 +17,7 @@ import gregtech.api.recipes.RecipeMap;
 import gregtech.api.render.OrientedOverlayRenderer;
 import gregtech.api.render.Textures;
 import gregtech.api.util.GTUtility;
+import gregtech.common.ConfigHolder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -154,11 +155,23 @@ public class SimpleMachineMetaTileEntity extends WorkableTieredMetaTileEntity im
                     pushItemsIntoNearbyHandlers(getOutputFacingItems());
                 }
             }
+
+            if (getOffsetTimer() % 1000 == 0) {
+                if ((getCoverAtSide(EnumFacing.UP) == null && this.getWorld().getPrecipitationHeight(getPos()).getY() - 2 < this.getPos().getY())) {
+                    if (ConfigHolder.U.GT5u.canMachinesExplodeInRain && this.getWorld().isRaining() && this.getWorld().getBiome(this.getPos()).getRainfall() > 0) {
+                        if (GTUtility.getRandomIntXSTR(10) == 0) {
+                            GTUtility.doOvervoltageExplosion(this, 32);
+                        }
+                    }
+                }
+            }
         }
     }
 
+
     @Override
-    public boolean onScrewdriverClick(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, CuboidRayTraceResult hitResult) {
+    public boolean onScrewdriverClick(EntityPlayer playerIn, EnumHand hand, EnumFacing facing, CuboidRayTraceResult
+            hitResult) {
         EnumFacing hitFacing = ICoverable.determineGridSideHit(hitResult);
         if (facing == getOutputFacingItems() || facing == getOutputFacingFluids() ||
                 ((hitFacing == getOutputFacingItems() || hitFacing == getOutputFacingFluids()) && playerIn.isSneaking())) {
