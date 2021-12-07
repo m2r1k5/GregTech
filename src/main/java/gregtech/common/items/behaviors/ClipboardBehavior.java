@@ -87,17 +87,15 @@ public class ClipboardBehavior implements IItemBehaviour, ItemUIFactory {
 
 
     private static NBTTagCompound getPageCompound(ItemStack stack) {
-        if (!MetaItems.CLIPBOARD.isItemEqual(stack))
+        if (!MetaItems.CLIPBOARD.isItemEqual(stack) || stack.getTagCompound() == null)
             return null;
-        assert stack.getTagCompound() != null;
         short pageNum = stack.getTagCompound().getShort("PageIndex");
         return stack.getTagCompound().getCompoundTag("Page" + pageNum);
     }
 
     private static void setPageCompound(ItemStack stack, NBTTagCompound pageCompound) {
-        if (!MetaItems.CLIPBOARD.isItemEqual(stack))
+        if (!MetaItems.CLIPBOARD.isItemEqual(stack) || stack.getTagCompound() == null)
             return;
-        assert stack.getTagCompound() != null;
         short pageNum = stack.getTagCompound().getShort("PageIndex");
         stack.getTagCompound().setTag("Page" + pageNum, pageCompound);
     }
@@ -131,8 +129,9 @@ public class ClipboardBehavior implements IItemBehaviour, ItemUIFactory {
         if (!MetaItems.CLIPBOARD.isItemEqual(stack))
            return;
         NBTTagCompound tagCompound = getPageCompound(stack);
-        short buttonState;
-        buttonState = tagCompound.getShort("ButStat");
+        if(tagCompound == null)
+            return;
+        short buttonState = tagCompound.getShort("ButStat");
 
         short clearedState = (short) (buttonState & ~(3 << (pos * 2))); // Clear out the desired slot
         buttonState = (short) (clearedState | (newState << (pos * 2))); // And add the new state back in
@@ -147,6 +146,8 @@ public class ClipboardBehavior implements IItemBehaviour, ItemUIFactory {
             return 0;
         NBTTagCompound tagCompound = getPageCompound(stack);
         short buttonState;
+        if(tagCompound == null)
+            return 0;
         buttonState = tagCompound.getShort("ButStat");
         return ((buttonState >> pos * 2) & 3);
     }
@@ -156,6 +157,8 @@ public class ClipboardBehavior implements IItemBehaviour, ItemUIFactory {
         if (!MetaItems.CLIPBOARD.isItemEqual(stack))
             return;
         NBTTagCompound tagCompound = getPageCompound(stack);
+        if(tagCompound == null)
+            return;
         tagCompound.setString("Task" + pos, newString);
         setPageCompound(stack, tagCompound);
     }
@@ -165,6 +168,8 @@ public class ClipboardBehavior implements IItemBehaviour, ItemUIFactory {
         if (!MetaItems.CLIPBOARD.isItemEqual(stack))
             return "";
         NBTTagCompound tagCompound = getPageCompound(stack);
+        if(tagCompound == null)
+            return "";
         return tagCompound.getString("Task" + pos);
     }
 
@@ -173,7 +178,8 @@ public class ClipboardBehavior implements IItemBehaviour, ItemUIFactory {
         if (!MetaItems.CLIPBOARD.isItemEqual(stack))
             return;
         NBTTagCompound tagCompound = getPageCompound(stack);
-        assert tagCompound != null;
+        if(tagCompound == null)
+            return;
         tagCompound.setString("Title", newString);
         setPageCompound(stack, tagCompound);
     }
@@ -183,6 +189,8 @@ public class ClipboardBehavior implements IItemBehaviour, ItemUIFactory {
         if (!MetaItems.CLIPBOARD.isItemEqual(stack))
             return "";
         NBTTagCompound tagCompound = getPageCompound(stack);
+        if(tagCompound == null)
+            return "";
         return tagCompound.getString("Title");
     }
 
@@ -191,6 +199,8 @@ public class ClipboardBehavior implements IItemBehaviour, ItemUIFactory {
         if (!MetaItems.CLIPBOARD.isItemEqual(stack))
             return 1;
         NBTTagCompound tagCompound = stack.getTagCompound();
+        if(tagCompound == null)
+            return 1;
         return tagCompound.getInteger("PageIndex");
     }
 
@@ -199,8 +209,8 @@ public class ClipboardBehavior implements IItemBehaviour, ItemUIFactory {
         if (!MetaItems.CLIPBOARD.isItemEqual(stack))
             return;
         NBTTagCompound tagCompound = stack.getTagCompound();
-        assert tagCompound != null;
-
+        if(tagCompound == null)
+            return;
         int currentIndex = tagCompound.getInteger("PageIndex");
         // Clamps currentIndex between 0 and MAX_PAGES.
         tagCompound.setInteger("PageIndex", Math.max(Math.min(currentIndex + increment, MAX_PAGES - 1), 0));
