@@ -9,6 +9,7 @@ import gregtech.api.recipes.recipeproperties.PrimitiveProperty;
 import gregtech.api.recipes.recipeproperties.RecipeProperty;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.util.GTUtility;
+import gregtech.common.items.MetaItems;
 import gregtech.integration.jei.utils.JEIHelpers;
 import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
@@ -20,6 +21,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
@@ -76,9 +78,24 @@ public class GTRecipeWrapper implements IRecipeWrapper {
 
         // Outputs
         if (!recipe.getOutputs().isEmpty() || !recipe.getChancedOutputs().isEmpty()) {
-            List<ItemStack> recipeOutputs = recipe.getOutputs()
-                    .stream().map(ItemStack::copy).collect(Collectors.toList());
-            currentItemSlot += recipeOutputs.size();
+            List<ItemStack> recipeOutputs;
+
+            // Scanner Output replacing
+            if (recipe.getOutputs().get(0).hasTagCompound() && recipe.getOutputs().get(0).isItemEqual(MetaItems.TOOL_DATA_STICK.getStackForm(1))) {
+                ItemStack dataStick = recipe.getOutputs().get(0);
+                NBTTagCompound researchItemNBT = dataStick.getSubCompound("asslineOutput");
+                ItemStack researchItem = new ItemStack(researchItemNBT);
+                if (!researchItem.isEmpty()) {
+                    recipeOutputs = Collections.singletonList(researchItem);
+                } else {
+                    recipeOutputs = getOutputListFromRecipe(recipe);
+                    currentItemSlot += recipeOutputs.size();
+                }
+
+            } else {
+                recipeOutputs = getOutputListFromRecipe(recipe);
+                currentItemSlot += recipeOutputs.size();
+            }
 
             List<ChanceEntry> chancedOutputs = recipe.getChancedOutputs();
             chancedOutputs.sort(Comparator.comparingInt(entry -> entry == null ? 0 : entry.getChance()));
@@ -116,6 +133,11 @@ public class GTRecipeWrapper implements IRecipeWrapper {
         if (notConsumed) {
             tooltip.add(I18n.format("gregtech.recipe.not_consumed"));
         }
+    }
+
+    private List<ItemStack> getOutputListFromRecipe(Recipe recipe) {
+        return recipe.getOutputs()
+                .stream().map(ItemStack::copy).collect(Collectors.toList());
     }
 
     @Override
