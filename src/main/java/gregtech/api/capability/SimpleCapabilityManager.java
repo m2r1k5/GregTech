@@ -46,8 +46,6 @@ public class SimpleCapabilityManager {
         registerCapabilityWithNoDefault(IMultiblockController.class);
         registerCapabilityWithNoDefault(AbstractRecipeLogic.class);
         registerCapabilityWithNoDefault(HardwareProvider.class);
-        registerCapabilityWithNoDefault(IResearchDataProvider.class);
-
         registerCapabilityWithNoDefault(IWrenchItem.class);
         registerCapabilityWithNoDefault(ICutterItem.class);
         registerCapabilityWithNoDefault(IScrewdriverItem.class);
