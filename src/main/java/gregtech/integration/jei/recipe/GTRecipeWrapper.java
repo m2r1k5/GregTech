@@ -5,11 +5,11 @@ import gregtech.api.recipes.Recipe;
 import gregtech.api.recipes.Recipe.ChanceEntry;
 import gregtech.api.recipes.RecipeMap;
 import gregtech.api.recipes.RecipeMaps;
+import gregtech.api.recipes.builders.AssemblyLineRecipeBuilder;
 import gregtech.api.recipes.recipeproperties.PrimitiveProperty;
 import gregtech.api.recipes.recipeproperties.RecipeProperty;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.util.GTUtility;
-import gregtech.common.items.MetaItems;
 import gregtech.integration.jei.utils.JEIHelpers;
 import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
@@ -79,17 +79,13 @@ public class GTRecipeWrapper implements IRecipeWrapper {
         // Outputs
         if (!recipe.getOutputs().isEmpty() || !recipe.getChancedOutputs().isEmpty()) {
             List<ItemStack> recipeOutputs;
-            boolean outputNeedsReplacing = false;
-            try {
-                outputNeedsReplacing = recipe.getOutputs().get(0).hasTagCompound() && recipe.getOutputs().get(0).isItemEqual(MetaItems.TOOL_DATA_STICK.getStackForm(1));
-            } catch (Exception ignored) {}
 
             // Scanner Output replacing
-            if (outputNeedsReplacing) {
+            if (recipe.getOutputs().size() > 0 && recipe.getOutputs().get(0).getSubCompound(AssemblyLineRecipeBuilder.RESEARCH_NBT_TAG_NAME) != null) {
                 ItemStack dataStick = recipe.getOutputs().get(0);
-                NBTTagCompound researchItemNBT = dataStick.getSubCompound("asslineOutput");
+                NBTTagCompound researchItemNBT = dataStick.getSubCompound(AssemblyLineRecipeBuilder.RESEARCH_NBT_TAG_NAME);
                 ItemStack researchItem = new ItemStack(researchItemNBT);
-                if (!researchItem.isEmpty()) {
+                if (!researchItem.isEmpty() && researchItemNBT != null) {
                     recipeOutputs = Collections.singletonList(researchItem);
                 } else {
                     recipeOutputs = getOutputListFromRecipe(recipe);
