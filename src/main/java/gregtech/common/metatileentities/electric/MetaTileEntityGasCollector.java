@@ -57,7 +57,7 @@ public class MetaTileEntityGasCollector extends SimpleMachineMetaTileEntity {
 
         @Override
         protected boolean checkRecipe(Recipe recipe) {
-            return ((MetaTileEntityGasCollector) metaTileEntity).checkRecipe(recipe);
+            return ((MetaTileEntityGasCollector) metaTileEntity).checkRecipe(recipe) && super.checkRecipe(recipe);
         }
     }
 }
