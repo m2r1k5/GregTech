@@ -25,6 +25,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
@@ -99,21 +100,22 @@ public abstract class RecipeBuilder<R extends RecipeBuilder<R>> {
         this.cleanroom = recipeBuilder.cleanroom;
     }
 
-    public R cleanroom(CleanroomType cleanroom) {
+    public R cleanroom(@Nullable CleanroomType cleanroom) {
         if (!ConfigHolder.machines.enableCleanroom)
             return (R) this;
 
-        if (cleanroom == null) {
-            GTLog.logger.error("Cleanroom cannot be null", new IllegalArgumentException());
-            recipeStatus = EnumValidationResult.INVALID;
-        }
+        // cleanroom property can be null, as it is default null.
         this.cleanroom = cleanroom;
         return (R) this;
     }
 
     public boolean applyProperty(@Nonnull String key, Object value) {
         if (key.equals(CleanroomProperty.KEY)) {
-            this.cleanroom((CleanroomType) value);
+            if (value instanceof CleanroomType)
+                this.cleanroom((CleanroomType) value);
+            else if (value instanceof String)
+                this.cleanroom(CleanroomType.getByName((String) value));
+            else return false;
             return true;
         }
         return false;
@@ -614,6 +616,11 @@ public abstract class RecipeBuilder<R extends RecipeBuilder<R>> {
 
     public int getDuration() {
         return duration;
+    }
+
+    @Nullable
+    public CleanroomType getCleanroom() {
+        return cleanroom;
     }
 
     @Override
