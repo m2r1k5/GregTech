@@ -124,6 +124,8 @@ public class MetaTileEntities {
     public static final MetaTileEntityFisher[] FISHER = new MetaTileEntityFisher[4];
     public static final MetaTileEntityWorldAccelerator[] WORLD_ACCELERATOR = new MetaTileEntityWorldAccelerator[8]; // no ULV, no MAX
     public static MetaTileEntityMachineHatch MACHINE_HATCH;
+    public static MetaTileEntityPassthroughHatchItem PASSTHROUGH_HATCH_ITEM;
+    public static MetaTileEntityPassthroughHatchFluid PASSTHROUGH_HATCH_FLUID;
     // Used for addons if they wish to disable certain tiers of machines
     private static final Map<String, Boolean> MID_TIER = new HashMap<>();
     private static final Map<String, Boolean> HIGH_TIER = new HashMap<>();
@@ -592,6 +594,8 @@ public class MetaTileEntities {
         }
 
         MACHINE_HATCH = registerMetaTileEntity(1398, new MetaTileEntityMachineHatch(gregtechId("machine_hatch"), 5));
+        PASSTHROUGH_HATCH_ITEM = registerMetaTileEntity(1399, new MetaTileEntityPassthroughHatchItem(gregtechId("passthrough_hatch_item"), 3));
+        PASSTHROUGH_HATCH_FLUID = registerMetaTileEntity(1400, new MetaTileEntityPassthroughHatchFluid(gregtechId("passthrough_hatch_fluid"), 3));
         // Free Range: 1405-1509
 
         // Buffers, IDs 1510-1512
