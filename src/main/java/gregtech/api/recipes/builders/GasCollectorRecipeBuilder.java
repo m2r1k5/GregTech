@@ -8,6 +8,7 @@ import gregtech.api.util.EnumValidationResult;
 import gregtech.api.util.ValidationResult;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class GasCollectorRecipeBuilder extends RecipeBuilder<GasCollectorRecipeB
     }
 
     @Override
-    public boolean applyProperty(String key, Object value) {
+    public boolean applyProperty(@Nonnull String key, Object value) {
         if (key.equals(GasCollectorDimensionProperty.KEY)) {
             this.dimension(((Number) value).intValue());
             return true;
