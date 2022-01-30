@@ -1,11 +1,11 @@
 package gregtech.loaders.recipe;
 
+import gregtech.api.metatileentity.multiblock.CleanroomType;
 import gregtech.api.recipes.ModHandler;
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
 import gregtech.api.unification.material.MarkerMaterials.Color;
 import gregtech.api.unification.material.MarkerMaterials.Tier;
 import gregtech.api.unification.stack.UnificationEntry;
-import net.minecraft.item.ItemStack;
 
 import static gregtech.api.GTValues.*;
 import static gregtech.api.recipes.RecipeMaps.*;
@@ -313,6 +313,7 @@ public class BatteryRecipes {
                 .input(LAPOTRON_CRYSTAL)
                 .notConsumable(craftingLens, Color.Blue)
                 .output(ENGRAVED_LAPOTRON_CHIP, 3)
+                .cleanroom(CleanroomType.CLEANROOM)
                 .duration(256).EUt(VA[HV]).buildAndRegister();
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder().duration(512).EUt(1024)
@@ -324,6 +325,7 @@ public class BatteryRecipes {
                 .input(plate, Platinum, 8)
                 .output(ENERGY_LAPOTRONIC_ORB)
                 .solderMultiplier(2)
+                .cleanroom(CleanroomType.CLEANROOM)
                 .buildAndRegister();
 
         // Lapotronic Energy Cluster
@@ -343,6 +345,7 @@ public class BatteryRecipes {
                 .input(bolt, Naquadah, 16)
                 .fluidInputs(SolderingAlloy.getFluid(L * 5))
                 .output(ENERGY_LAPOTRONIC_ORB_CLUSTER)
+                .cleanroom(CleanroomType.CLEANROOM)
                 .buildAndRegister();
 
         // Energy Module
@@ -362,6 +365,7 @@ public class BatteryRecipes {
                 .input(bolt, Trinium, 16)
                 .fluidInputs(SolderingAlloy.getFluid(L * 10))
                 .output(ENERGY_MODULE)
+                .cleanroom(CleanroomType.CLEANROOM)
                 .buildAndRegister();
 
         // Energy Cluster
@@ -382,6 +386,7 @@ public class BatteryRecipes {
                 .fluidInputs(SolderingAlloy.getFluid(L * 20))
                 .fluidInputs(Polybenzimidazole.getFluid(L * 4))
                 .output(ENERGY_CLUSTER)
+                .cleanroom(CleanroomType.CLEANROOM)
                 .buildAndRegister();
 
         // Ultimate Battery
@@ -403,6 +408,7 @@ public class BatteryRecipes {
                 .fluidInputs(Polybenzimidazole.getFluid(2000))
                 .fluidInputs(Naquadria.getFluid(L * 18))
                 .output(ULTIMATE_BATTERY)
+                .cleanroom(CleanroomType.CLEANROOM)
                 .buildAndRegister();
     }
 }
