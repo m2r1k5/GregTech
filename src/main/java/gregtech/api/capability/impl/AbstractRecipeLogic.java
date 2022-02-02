@@ -8,10 +8,7 @@ import gregtech.api.capability.IWorkable;
 import gregtech.api.metatileentity.IVoidable;
 import gregtech.api.metatileentity.MTETrait;
 import gregtech.api.metatileentity.MetaTileEntity;
-import gregtech.api.metatileentity.multiblock.CleanroomType;
-import gregtech.api.metatileentity.multiblock.ICleanroomProvider;
-import gregtech.api.metatileentity.multiblock.ICleanroomReceiver;
-import gregtech.api.metatileentity.multiblock.ParallelLogicType;
+import gregtech.api.metatileentity.multiblock.*;
 import gregtech.api.recipes.MatchingMode;
 import gregtech.api.recipes.Recipe;
 import gregtech.api.recipes.RecipeMap;
@@ -331,6 +328,9 @@ public abstract class AbstractRecipeLogic extends MTETrait implements IWorkable,
     protected boolean checkRecipe(@Nonnull Recipe recipe) {
         CleanroomType requiredType = recipe.getProperty(CleanroomProperty.getInstance(), null);
         if (requiredType == null)
+            return true;
+
+        if (getMetaTileEntity() instanceof MultiblockWithDisplayBase && ConfigHolder.machines.cleanMultiblocks)
             return true;
 
         ICleanroomProvider cleanroomProvider = ((ICleanroomReceiver) getMetaTileEntity()).getCleanroom();
