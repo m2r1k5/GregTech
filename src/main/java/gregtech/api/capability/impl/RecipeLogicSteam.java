@@ -7,6 +7,7 @@ import gregtech.api.damagesources.DamageSources;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.recipes.Recipe;
 import gregtech.api.recipes.RecipeMap;
+import gregtech.api.recipes.recipeproperties.RecipePropertyStorage;
 import gregtech.common.advancement.GTTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSnow;
@@ -187,10 +188,10 @@ public class RecipeLogicSteam extends AbstractRecipeLogic implements IVentable {
     }
 
     @Override
-    protected int[] runOverclockingLogic(@Nonnull Recipe recipe, boolean negativeEU, int maxOverclocks) {
-        return standardOverclockingLogic((isHighPressure ? recipe.getEUt() * 2 : recipe.getEUt()) * (negativeEU ? -1 : 1),
+    protected int[] runOverclockingLogic(RecipePropertyStorage propertyStorage, int recipeEUt, long maxVoltage, int recipeDuration, int maxOverclocks) {
+        return standardOverclockingLogic(Math.abs(isHighPressure ? recipeEUt * 2 : recipeEUt),
                 getMaxVoltage(),
-                isHighPressure ? recipe.getDuration() : recipe.getDuration() * 2,
+                isHighPressure ? recipeDuration : recipeDuration * 2,
                 getOverclockingDurationDivisor(),
                 getOverclockingVoltageMultiplier(),
                 maxOverclocks
