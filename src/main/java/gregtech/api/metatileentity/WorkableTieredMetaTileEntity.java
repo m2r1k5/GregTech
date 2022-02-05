@@ -7,7 +7,6 @@ import gregtech.api.GTValues;
 import gregtech.api.capability.impl.*;
 import gregtech.api.metatileentity.multiblock.ICleanroomProvider;
 import gregtech.api.metatileentity.multiblock.ICleanroomReceiver;
-import gregtech.api.metatileentity.sound.ISoundCreator;
 import gregtech.api.recipes.Recipe;
 import gregtech.api.recipes.RecipeMap;
 import gregtech.api.util.GTUtility;
