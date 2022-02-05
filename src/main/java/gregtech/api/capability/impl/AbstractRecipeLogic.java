@@ -258,7 +258,7 @@ public abstract class AbstractRecipeLogic extends MTETrait implements IWorkable,
         if (cleanroomProvider == null)
             return false;
 
-        return cleanroomProvider.isClean() && requiredType == cleanroomProvider.getType();
+        return cleanroomProvider.isClean() && cleanroomProvider.getTypes().contains(requiredType);
     }
 
     /**
@@ -337,7 +337,7 @@ public abstract class AbstractRecipeLogic extends MTETrait implements IWorkable,
         if (cleanroomProvider == null)
             return false;
 
-        return cleanroomProvider.isClean() && requiredType == cleanroomProvider.getType();
+        return cleanroomProvider.isClean() && cleanroomProvider.getTypes().contains(requiredType);
     }
 
     /**
