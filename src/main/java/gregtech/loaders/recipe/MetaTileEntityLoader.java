@@ -29,6 +29,7 @@ import java.util.Arrays;
 
 import static gregtech.common.blocks.BlockBoilerCasing.BoilerCasingType.*;
 import static gregtech.common.blocks.BlockFireboxCasing.FireboxCasingType.*;
+import static gregtech.common.blocks.BlockHermeticCasing.HermeticCasingsType.*;
 import static gregtech.common.blocks.BlockMachineCasing.MachineCasingType.*;
 import static gregtech.common.blocks.BlockMetalCasing.MetalCasingType.*;
 import static gregtech.common.blocks.BlockMultiblockCasing.MultiblockCasingType.*;
@@ -36,7 +37,6 @@ import static gregtech.common.blocks.BlockSteamCasing.SteamCasingType.*;
 import static gregtech.common.blocks.BlockTurbineCasing.TurbineCasingType.*;
 import static gregtech.common.blocks.BlockWarningSign.SignType.*;
 import static gregtech.common.blocks.BlockWireCoil.CoilType.CUPRONICKEL;
-import static gregtech.common.blocks.BlockHermeticCasing.HermeticCasingsType.*;
 import static gregtech.loaders.recipe.CraftingComponent.*;
 
 public class MetaTileEntityLoader {
@@ -392,6 +392,8 @@ public class MetaTileEntityLoader {
         } else {
             ModHandler.addShapedRecipe(true, "electric_blast_furnace", MetaTileEntities.ELECTRIC_BLAST_FURNACE.getStackForm(), "FFF", "CMC", "WCW", 'M', MetaBlocks.METAL_CASING.getItemVariant(INVAR_HEATPROOF), 'F', OreDictNames.craftingFurnace, 'C', new UnificationEntry(OrePrefix.circuit, MarkerMaterials.Tier.Basic), 'W', new UnificationEntry(OrePrefix.cableGtSingle, Materials.Tin));
         }
+
+        ModHandler.addShapedRecipe(true, "cleanroom", MetaTileEntities.CLEANROOM.getStackForm(), "FFF", "RHR", "MCM", 'F', MetaItems.ITEM_FILTER.getStackForm(), 'R', new UnificationEntry(OrePrefix.rotor, Materials.StainlessSteel), 'H', HULL.getIngredient(GTValues.HV), 'M', MetaItems.ELECTRIC_MOTOR_HV.getStackForm(), 'C', new UnificationEntry(OrePrefix.circuit, Tier.Advanced));
     }
 
     // Can only accept a subset of "Item" types:
