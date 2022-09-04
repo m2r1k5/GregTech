@@ -639,6 +639,12 @@ public class CircuitRecipes {
                 .output(QUANTUM_STAR)
                 .duration(1920).EUt(VA[HV]).buildAndRegister();
 
+        CHEMICAL_BATH_RECIPES.recipeBuilder()
+                .input(gem, BariumBorate, 8)
+                .fluidInputs(Radon.getFluid(1250))
+                .output(QUANTUM_STAR)
+                .duration(1920).EUt(VA[HV]).buildAndRegister();
+
         AUTOCLAVE_RECIPES.recipeBuilder()
                 .input(QUANTUM_STAR)
                 .fluidInputs(Neutronium.getFluid(L * 2))

@@ -1618,6 +1618,7 @@ material.antimony_trifluoride=Antimony Trifluoride
 material.enriched_naquadah_sulfate=Enriched Naquadah Sulfate
 material.naquadria_sulfate=Naquadria Sulfate
 material.pyrochlore=Pyrochlore
+material.barium_borate=Barium Borate
 
 
 # Organic Chemistry Materials
@@ -2147,6 +2148,11 @@ item.platinum_sludge_residue.dust=Platinum Sludge Residue
 item.iridium_metal_residue.dustTiny=Tiny Pile of Iridium Metal Residue
 item.iridium_metal_residue.dustSmall=Small Pile of Iridium Metal Residue
 item.iridium_metal_residue.dust=Iridium Metal Residue
+item.barium_borate.gem=Star of Boron
+item.barium_borate.gemChipped=Chipped Star of Boron
+item.barium_borate.gemFlawed=Flawed Star of Boron
+item.barium_borate.gemFlawless=Flawless Star of Boron
+item.barium_borate.gemExquisite=Exquisite Star of Boron
 
 recipemap.ore_washer.name=Ore Washer
 recipemap.thermal_centrifuge.name=Thermal Centrifuge

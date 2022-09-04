@@ -494,6 +494,14 @@ public class MixerRecipes {
                 .output(dust, Ruridit, 3)
                 .buildAndRegister();
 
+        MIXER_RECIPES.recipeBuilder().duration(200).EUt(VA[EV])
+                .input(dust, Barium)
+                .input(dust, Boron, 2)
+                .fluidInputs(Oxygen.getFluid(4000))
+                .notConsumable(new IntCircuitIngredient(1))
+                .output(dust, BariumBorate, 7)
+                .buildAndRegister();
+
         // Superconductor Alloys
         MIXER_RECIPES.recipeBuilder().duration(400).EUt(24)
                 .input(dust, Manganese)

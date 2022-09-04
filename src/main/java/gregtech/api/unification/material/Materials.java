@@ -465,6 +465,7 @@ public class Materials {
     public static Material EnrichedNaquadahSulfate;
     public static Material NaquadriaSulfate;
     public static Material Pyrochlore;
+    public static Material BariumBorate;
 
     /**
      * Organic chemistry

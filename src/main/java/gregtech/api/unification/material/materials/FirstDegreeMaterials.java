@@ -1451,5 +1451,12 @@ public class FirstDegreeMaterials {
                 .flags()
                 .components(Calcium, 2, Niobium, 2, Oxygen, 7)
                 .build();
+
+        BariumBorate = new Material.Builder(450, "barium_borate")
+                .gem()
+                .color(0xD4FFD4).iconSet(NETHERSTAR)
+                .flags(NO_SMELTING, GENERATE_LENS)
+                .components(Barium, 1, Boron, 2, Oxygen, 4)
+                .build();
     }
 }
